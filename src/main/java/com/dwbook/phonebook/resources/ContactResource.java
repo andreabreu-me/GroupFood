@@ -52,6 +52,13 @@ public class ContactResource {
         return Response.created(new URI(String.valueOf(newContactId))).build();
     }
 
+    @POST
+    @Path("/batch_create")
+    public Response batchCreateContact(List<Contact> contact, @Auth Boolean isAuthenticated) throws URISyntaxException {
+        int[] ids = contactDao.batchCreateContact(contact);
+        return Response.created(new URI(String.valueOf(ids.length))).build();
+    }
+
     @DELETE
     @Path("/{id}")
     public Response deleteContact(@PathParam("id") int id, @Auth Boolean isAuthenticated) {

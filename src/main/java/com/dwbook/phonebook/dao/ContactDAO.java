@@ -4,6 +4,7 @@ import com.dwbook.phonebook.dao.mappers.ContactMapper;
 import com.dwbook.phonebook.representations.Contact;
 import org.skife.jdbi.v2.TransactionIsolationLevel;
 import org.skife.jdbi.v2.sqlobject.*;
+import org.skife.jdbi.v2.sqlobject.customizers.BatchChunkSize;
 import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 import org.skife.jdbi.v2.sqlobject.mixins.Transactional;
 
@@ -32,4 +33,8 @@ public interface ContactDAO extends Transactional<ContactDAO> {
 
     @SqlUpdate("delete from contact where id = :id")
     void deleteContact(@Bind("id") int id);
+
+    @SqlBatch("insert into contact (id, firstName, lastName, phone) values (NULL, :it.firstName, :it.lastName, :it.phone)")
+    @BatchChunkSize(1000)
+    public int[] batchCreateContact(@BindBean("it") Iterable<Contact> its);
 }
