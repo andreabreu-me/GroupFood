@@ -115,7 +115,7 @@ insert into `Facebook`(`id`, `userId`, `token`, `firstName`, `lastName`, `email`
 values ('snowfbid','snowid','token5678', '約翰', 'snow', 'jon@snow.com');
 
 /*
-insert into `group`(`organizer_id`,`name`,`description`,`created_on`)
+insert into `Group`(`organizerId`,`name`,`description`,`createdOn`)
     values ('sansaid','午餐','my lunch group', UNIX_TIMESTAMP());
 
 insert into `group_user`(`group_id`,`user_id`,`created_on`) values (1, 'sansaid', UNIX_TIMESTAMP());

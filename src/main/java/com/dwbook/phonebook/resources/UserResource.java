@@ -64,26 +64,26 @@ public class UserResource {
         // store the new user
     	Calendar calendar = Calendar.getInstance();
     	Timestamp timeStamp = new Timestamp(calendar.getTime().getTime());
-        int newUserId = userDao.createUser(user.getId(), user.getfacebook_id(), user.getgoogleplus_id(), timeStamp.toString());
+        int newUserId = userDao.createUser(user.getId(), user.getFacebookId(), user.getGooglePlusId(), timeStamp.toString());
         return Response.created(new URI(String.valueOf(newUserId))).build();
     }
-
+/*
     @POST
     @Path("/batch_create")
     public Response batchCreateUser(List<User> user, @Auth Boolean isAuthenticated) throws URISyntaxException {
         int[] ids = userDao.batchCreateUser(user);
         return Response.created(new URI(String.valueOf(ids.length))).build();
     }
-
+*/
     @DELETE
     @Path("/{id}")
-    public Response deleteUser(@PathParam("id") String id, @Auth Boolean isAuthenticated) {
+    public Response softDeleteUser(@PathParam("id") String id, @Auth Boolean isAuthenticated) {
         // delete the user with the provided id
         try {
             userDao.begin();
             Calendar calendar = Calendar.getInstance();
         	Timestamp timeStamp = new Timestamp(calendar.getTime().getTime());
-            userDao.deleteUser(id, timeStamp.toString());
+            userDao.softDeleteUser(id, timeStamp.toString());
             System.out.println("after delete called");
             //throw new Exception("test exception");
             userDao.commit();
@@ -99,8 +99,8 @@ public class UserResource {
         // update the user with the provided ID
     	Calendar calendar = Calendar.getInstance();
     	Timestamp timeStamp = new Timestamp(calendar.getTime().getTime());
-        userDao.updateUser(id, user.getfacebook_id(), user.getgoogleplus_id(), timeStamp.toString());
+        userDao.updateUser(id, user.getFacebookId(), user.getGooglePlusId(), timeStamp.toString());
         return Response.ok(
-                new User(id, user.getfacebook_id(), user.getgoogleplus_id(), user.getcreated_on(), user.getupdated_on(), user.getdeleted_on())).build();
+                new User(id, user.getFacebookId(), user.getGooglePlusId(), user.getCreatedOn(), user.getUpdatedOn(), user.getDeletedOn())).build();
     }
 }

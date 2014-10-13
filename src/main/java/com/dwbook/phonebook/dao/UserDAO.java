@@ -1,46 +1,51 @@
 package com.dwbook.phonebook.dao;
 
-import com.dwbook.phonebook.dao.mappers.UserMapper;
-import com.dwbook.phonebook.representations.User;
+import java.util.List;
 
 import org.skife.jdbi.v2.TransactionIsolationLevel;
-import org.skife.jdbi.v2.sqlobject.*;
-import org.skife.jdbi.v2.sqlobject.customizers.BatchChunkSize;
+import org.skife.jdbi.v2.sqlobject.Bind;
+import org.skife.jdbi.v2.sqlobject.GetGeneratedKeys;
+import org.skife.jdbi.v2.sqlobject.SqlQuery;
+import org.skife.jdbi.v2.sqlobject.SqlUpdate;
+import org.skife.jdbi.v2.sqlobject.Transaction;
 import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 import org.skife.jdbi.v2.sqlobject.mixins.Transactional;
 
-import java.util.List;
+import com.dwbook.phonebook.dao.mappers.UserMapper;
+import com.dwbook.phonebook.representations.User;
 
 /**
  * Created by howard on 10/12/14.
  */
 public interface UserDAO extends Transactional<UserDAO> {
 
-	//only show ones that did not have a deleted_on time stamp
+	//only show ones that did not have a deletedOn time stamp
     @Mapper(UserMapper.class)
-    @SqlQuery("select * from user where deleted_on is null")
+    @SqlQuery("select * from User where deletedOn is null")
     List<User> getAllUser();
 
-	//only show ones that did not have a deleted_on time stamp
+	//only show ones that did not have a deletedOn time stamp
     @Mapper(UserMapper.class)
-    @SqlQuery("select * from user where id = :id and deleted_on is null")
+    @SqlQuery("select * from User where id = :id and deletedOn is null")
     User getUserById(@Bind("id") String id);
 
     @GetGeneratedKeys
-    @SqlUpdate("insert into user (id, facebook_id, googleplus_id, created_on) values (:id, :facebook_id, :googleplus_id, :created_on)")
-    int createUser(@Bind("id") String id, @Bind("facebook_id") String facebook_id, @Bind("googleplus_id") String googleplus_id, @Bind("created_on") String timeStamp);
+    @SqlUpdate("insert into User (id, facebookId, googlePlusId, createdOn) values (:id, :facebookId, :googlePlusId, :createdOn)")
+    int createUser(@Bind("id") String id, @Bind("facebookId") String facebookId, @Bind("googlePlusId") String googlePlusId, @Bind("createdOn") String timeStamp);
 
-	//only modify ones that did not have a deleted_on time stamp
+	//only modify ones that did not have a deletedOn time stamp
     @Transaction(TransactionIsolationLevel.REPEATABLE_READ)
-    @SqlUpdate("update user set facebook_id = :facebook_id, googleplus_id=:googleplus_id, updated_on = :updated_on where id= :id and deleted_on is null")
-    void updateUser(@Bind("id") String id, @Bind("facebook_id") String facebook_id, @Bind("googleplus_id") String googleplus_id, @Bind("updated_on") String timeStamp);
+    @SqlUpdate("update User set facebookId = :facebookId, googlePlusId=:googlePlusId, updatedOn = :updatedOn where id= :id and deletedOn is null")
+    void updateUser(@Bind("id") String id, @Bind("facebookId") String facebookId, @Bind("googlePlusId") String googlePlusId, @Bind("updatedOn") String timeStamp);
 
-	//update data with a deleted_on time stamp without actually deleting it
-    @SqlUpdate("update user set deleted_on=:deleted_on where id = :id")
-    void deleteUser(@Bind("id") String id, @Bind("deleted_on")String timeStamp);
-
+	//update data with a deletedOn time stamp without actually deleting it
+    @SqlUpdate("update User set deletedOn=:deletedOn where id = :id")
+    void softDeleteUser(@Bind("id") String id, @Bind("deletedOn")String timeStamp);
+    
+    /*
     //!!not touched as I am not sure what to do with this yet
-    @SqlBatch("insert into user (id, facebook_id, googleplus_id) values (:it.id, :it.facebook_id, :it.googleplus_id)")
+    @SqlBatch("insert into User (id, facebookId, googlePlusId) values (:it.id, :it.facebookId, :it.googlePlusId)")
     @BatchChunkSize(1000)
     public int[] batchCreateUser(@BindBean("it") Iterable<User> its);
+    */
 }
