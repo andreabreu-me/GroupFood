@@ -6,28 +6,32 @@ DROP TABLE IF EXISTS `group`;
 DROP TABLE IF EXISTS `group_user`;
 SET FOREIGN_KEY_CHECKS=1;
 
+CREATE TABLE `user`(
+  `id` VARCHAR (128) NOT NULL,  /* cognito id */
+  `facebook_id` VARCHAR (128) NOT NULL, /* we will relax this constraint for guest user */
+  `googleplus_id` VARCHAR(128),
+  `created_on` DATETIME,
+  `updated_on` DATETIME,
+  `deleted_on` DATETIME,
+  
+  PRIMARY KEY (`id`)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =utf8
+  CHARACTER SET utf8
+  COLLATE utf8_general_ci;
+  
 CREATE TABLE `facebook` (
   `id` VARCHAR (128) NOT NULL,
+  `user_id` VARCHAR (128) NOT NULL,
   `token` VARCHAR (1024) NOT NULL,
   `first_name` VARCHAR (128) NOT NULL,
   `last_name` VARCHAR (128) NOT NULL,
   `email` VARCHAR (128),
 
   PRIMARY KEY (`id`),
+  FOREIGN KEY (`user_id`) REFERENCES `user`(`id`),
   INDEX `idx_email` (`email`)
-)
-  ENGINE =InnoDB
-  DEFAULT CHARSET =utf8
-  CHARACTER SET utf8
-  COLLATE utf8_general_ci;
-
-CREATE TABLE `user`(
-  `id` VARCHAR (128) NOT NULL,  /* cognito id */
-  `facebook_id` VARCHAR (128) NOT NULL, /* we will relax this constraint for guest user */
-  `googleplus_id` VARCHAR(128),
-
-  PRIMARY KEY (`id`),
-  FOREIGN KEY (`facebook_id`) REFERENCES `facebook`(`id`)
 )
   ENGINE =InnoDB
   DEFAULT CHARSET =utf8
@@ -96,20 +100,3 @@ CREATE TABLE `group_user` (
   DEFAULT CHARSET =utf8
   CHARACTER SET utf8
   COLLATE utf8_general_ci;
-
-/* DML bootstrap test data */
-insert into `facebook`(`id`, `token`, `first_name`, `last_name`, `email`)
-    values ('sansafbid','token1234', 'sansa', '史塔克', 'sansa@stark.com');
-insert into `facebook`(`id`, `token`, `first_name`, `last_name`, `email`)
-    values ('snowfbid','token5678', '約翰', 'snow', 'jon@snow.com');
-
-insert into `user`(`id`, `facebook_id`) values ('sansaid', 'sansafbid');
-insert into `user`(`id`, `facebook_id`) values ('snowid', 'snowfbid');
-
-/*
-insert into `group`(`organizer_id`,`name`,`description`,`created_on`)
-    values ('sansaid','午餐','my lunch group', UNIX_TIMESTAMP());
-
-insert into `group_user`(`group_id`,`user_id`,`created_on`) values (1, 'sansaid', UNIX_TIMESTAMP());
-insert into `group_user`(`group_id`,`user_id`,`created_on`) values (1, 'snowid', UNIX_TIMESTAMP());
-*/
