@@ -1,29 +1,17 @@
 package com.dwbook.phonebook.resources;
 
+import com.dwbook.phonebook.dao.UserDAO;
+import com.dwbook.phonebook.representations.User;
 import io.dropwizard.auth.Auth;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.List;
-
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
 import org.skife.jdbi.v2.DBI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.dwbook.phonebook.dao.UserDAO;
-import com.dwbook.phonebook.representations.User;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
 
 /**
  * Created by howard on 10/12/14.
@@ -67,14 +55,14 @@ public class UserResource {
         int newUserId = userDao.createUser(user.getId(), user.getFacebookId(), user.getGooglePlusId(), timeStamp.toString());
         return Response.created(new URI(String.valueOf(newUserId))).build();
     }
-/*
+
     @POST
     @Path("/batch_create")
     public Response batchCreateUser(List<User> user, @Auth Boolean isAuthenticated) throws URISyntaxException {
         int[] ids = userDao.batchCreateUser(user);
         return Response.created(new URI(String.valueOf(ids.length))).build();
     }
-*/
+
     @DELETE
     @Path("/{id}")
     public Response softDeleteUser(@PathParam("id") String id, @Auth Boolean isAuthenticated) {

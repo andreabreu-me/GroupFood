@@ -4,10 +4,13 @@ import java.util.List;
 
 import org.skife.jdbi.v2.TransactionIsolationLevel;
 import org.skife.jdbi.v2.sqlobject.Bind;
+import org.skife.jdbi.v2.sqlobject.BindBean;
 import org.skife.jdbi.v2.sqlobject.GetGeneratedKeys;
+import org.skife.jdbi.v2.sqlobject.SqlBatch;
 import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 import org.skife.jdbi.v2.sqlobject.Transaction;
+import org.skife.jdbi.v2.sqlobject.customizers.BatchChunkSize;
 import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 import org.skife.jdbi.v2.sqlobject.mixins.Transactional;
 
@@ -42,10 +45,10 @@ public interface UserDAO extends Transactional<UserDAO> {
     @SqlUpdate("update User set deletedOn=:deletedOn where id = :id")
     void softDeleteUser(@Bind("id") String id, @Bind("deletedOn")String timeStamp);
     
-    /*
+    
     //!!not touched as I am not sure what to do with this yet
     @SqlBatch("insert into User (id, facebookId, googlePlusId) values (:it.id, :it.facebookId, :it.googlePlusId)")
     @BatchChunkSize(1000)
     public int[] batchCreateUser(@BindBean("it") Iterable<User> its);
-    */
+    
 }

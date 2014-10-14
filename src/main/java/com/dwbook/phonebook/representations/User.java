@@ -17,7 +17,7 @@ public class User {
         this.googlePlusId = null;
         this.createdOn = null;
         this.updatedOn = null;
-       this. deletedOn = null;
+        this.deletedOn = null;
     }
 
     public User(String id, String facebookId, String googlePlusId, String createdOn, String updatedOn, String deletedOn) {
@@ -26,7 +26,7 @@ public class User {
         this.googlePlusId = googlePlusId;
         this.createdOn = createdOn;
         this.updatedOn = updatedOn;
-        this. deletedOn = deletedOn;
+        this.deletedOn = deletedOn;
     }
     
     public String getId() {
