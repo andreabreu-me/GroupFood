@@ -20,8 +20,8 @@ public interface GroupUserDAO extends Transactional<GroupUserDAO> {
     @SqlUpdate("insert into `GroupUser` (groupId, userId, createdOn) values (:groupId, :userId, UNIX_TIMESTAMP())")
     public int createGroupUser(@Bind("groupId") long groupId, @Bind("userId") String userId);
 
-    @BatchChunkSize(1000)
     @Transaction
+    @BatchChunkSize(1000)
     @SqlBatch("insert into `GroupUser` (groupId, userId, createdOn) values (:it.groupId, :it.userId, UNIX_TIMESTAMP())")
     public int[] createGroupUserBatch(@BindBean("it") Iterable<GroupUser> its);
 

@@ -13,6 +13,6 @@ import java.sql.SQLException;
 public class GroupUserMapper implements ResultSetMapper<GroupUser> {
     @Override
     public GroupUser map(int i, ResultSet resultSet, StatementContext statementContext) throws SQLException {
-        return new GroupUser(resultSet.getLong(0), resultSet.getString(1));
+        return new GroupUser(resultSet.getLong("groupId"), resultSet.getString("userId"));
     }
 }

@@ -19,12 +19,20 @@ public interface GroupDAO extends Transactional<GroupDAO> {
     @SqlUpdate("insert into `Group` (organizerId, name, description, createdOn) values (:organizerId, :name, :description, UNIX_TIMESTAMP())")
     long createGroup(@Bind("organizerId") String organizerId, @Bind("name") String name, @Bind("description") String description);
 
-    @BatchChunkSize(1000)
     @Transaction
+    @BatchChunkSize(1000)
     @SqlBatch("insert into `Group` (organizerId, name, description, createdOn) values (:it.organizerId, :it.name, :it.description, UNIX_TIMESTAMP())")
     int[] createGroupBatch (@BindBean("it") Iterable<Group> its);
 
     @Mapper(GroupMapper.class)
-    @SqlQuery("select id, organizerId, name, description, orderId, status from `Group` where id = :id")
-    Group findGroupById(@Bind("id") Long id);
+    @SqlQuery("select id, organizerId, name, description, orderId, status from `Group` where id = :id and deletedOn is null")
+    Group getGroupById(@Bind("id") long id);
+
+    @Transaction
+    @SqlUpdate("update `Group` set organizerId=:organizerId, name=:name, description=:description, updatedOn=UNIX_TIMESTAMP() where id=:id and deletedOn is null")
+    void updateGroup(@Bind("id") long id, @Bind("organizerId") String organizerId, @Bind("name") String name, @Bind("description") String description);
+
+    @Transaction
+    @SqlUpdate("update `Group` set deletedOn=UNIX_TIMESTAMP() where id=:id and deletedOn is null")
+    void deleteGroup(@Bind("id") long id);
 }
