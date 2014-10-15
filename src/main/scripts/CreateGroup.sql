@@ -32,6 +32,11 @@ CREATE TABLE `Facebook` (
   `firstName` VARCHAR (128) NOT NULL,
   `lastName` VARCHAR (128) NOT NULL,
   `email` VARCHAR (128),
+  
+    /* system info epoch */
+  `createdOn` INT UNSIGNED NOT NULL,
+  `updatedOn` INT UNSIGNED,
+  `deletedOn` INT UNSIGNED,
 
   PRIMARY KEY (`id`),
   FOREIGN KEY (`userId`) REFERENCES `User`(`id`),

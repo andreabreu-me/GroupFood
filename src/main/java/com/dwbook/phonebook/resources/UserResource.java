@@ -3,35 +3,63 @@ package com.dwbook.phonebook.resources;
 import com.dwbook.phonebook.dao.UserDAO;
 import com.dwbook.phonebook.representations.User;
 import io.dropwizard.auth.Auth;
+<<<<<<< HEAD
+=======
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.sql.SQLException;
+import java.util.List;
+
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+>>>>>>> temp
 import org.skife.jdbi.v2.DBI;
+import org.skife.jdbi.v2.Handle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+<<<<<<< HEAD
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+=======
+import com.dwbook.phonebook.dao.FacebookDAO;
+import com.dwbook.phonebook.dao.UserDAO;
+import com.dwbook.phonebook.representations.User;
+>>>>>>> temp
 
 /**
  * Created by howard on 10/12/14.
  */
 
-//!!warning: I believe Calendar works with the time zone in which the computer is running
-@Path("/user")
+@Path("/User")
 @Produces(MediaType.APPLICATION_JSON + "; charset=utf-8")
 public class UserResource {
 
     final static Logger logger = LoggerFactory.getLogger(UserResource.class);
     private final UserDAO userDao;
+    private final DBI jdbi;
 
     public UserResource(DBI jdbi) {
         userDao = jdbi.onDemand(UserDAO.class);
+        this.jdbi = jdbi;
     }
 
     @GET
     @Path("/all")
     public Response getAllUser(@Auth Boolean isAuthenticated) {
+    	
         List<User> allUser =  userDao.getAllUser();
         return Response.ok(allUser).build();
     }
@@ -48,12 +76,40 @@ public class UserResource {
     }
 
     @POST
+<<<<<<< HEAD
     public Response createUser(User user, @Auth Boolean isAuthenticated) throws URISyntaxException {
         // store the new user
     	Calendar calendar = Calendar.getInstance();
     	Timestamp timeStamp = new Timestamp(calendar.getTime().getTime());
         int newUserId = userDao.createUser(user.getId(), user.getFacebookId(), user.getGooglePlusId(), timeStamp.toString());
         return Response.created(new URI(String.valueOf(newUserId))).build();
+=======
+    public Response createUser(User user, @Auth Boolean isAuthenticated) throws URISyntaxException, SQLException{
+    	   Handle handle = jdbi.open();
+           handle.getConnection().setAutoCommit(false);
+           try {
+               handle.begin();
+               FacebookDAO facebookDao = handle.attach(FacebookDAO.class);
+               // store the new user
+               int newUserId = userDao.createUser(user.getId(), user.getFacebookId(), user.getGooglePlusId());
+               /*methods to be installed
+                * String [] lotOfData = retrieveDataFromFBId()
+              */
+               String id = "ChanghaoFBId";
+               String userId = "Changha";
+               String token = "token1234";
+               String firstName = "Changhao";
+               String lastName = "Huang";
+               String email = "howard168222@hotmail.com";
+               facebookDao.createFacebook(id, userId, token, firstName, lastName, email);
+               handle.commit();
+               return Response.created(new URI(String.valueOf(newUserId))).build();
+           } 
+           catch (Exception e) {
+               handle.rollback();
+               throw e;
+           }
+>>>>>>> temp
     }
 
     @POST
@@ -69,9 +125,13 @@ public class UserResource {
         // delete the user with the provided id
         try {
             userDao.begin();
+<<<<<<< HEAD
             Calendar calendar = Calendar.getInstance();
         	Timestamp timeStamp = new Timestamp(calendar.getTime().getTime());
             userDao.softDeleteUser(id, timeStamp.toString());
+=======
+            userDao.deleteUser(id);
+>>>>>>> temp
             System.out.println("after delete called");
             //throw new Exception("test exception");
             userDao.commit();
@@ -85,9 +145,13 @@ public class UserResource {
     @Path("/{id}")
     public Response updateUser(@PathParam("id") String id, User user, @Auth Boolean isAuthenticated) {
         // update the user with the provided ID
+<<<<<<< HEAD
     	Calendar calendar = Calendar.getInstance();
     	Timestamp timeStamp = new Timestamp(calendar.getTime().getTime());
         userDao.updateUser(id, user.getFacebookId(), user.getGooglePlusId(), timeStamp.toString());
+=======
+        userDao.updateUser(id, user.getFacebookId(), user.getGooglePlusId());
+>>>>>>> temp
         return Response.ok(
                 new User(id, user.getFacebookId(), user.getGooglePlusId(), user.getCreatedOn(), user.getUpdatedOn(), user.getDeletedOn())).build();
     }
