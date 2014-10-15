@@ -17,16 +17,16 @@ public interface GroupUserDAO extends Transactional<GroupUserDAO> {
 
     @Transaction
     @GetGeneratedKeys
-    @SqlUpdate("insert into group_user (group_id, user_id, created_on) values (:groupId, :userId, UNIX_TIMESTAMP())")
+    @SqlUpdate("insert into `GroupUser` (groupId, userId, createdOn) values (:groupId, :userId, UNIX_TIMESTAMP())")
     public int createGroupUser(@Bind("groupId") long groupId, @Bind("userId") String userId);
 
     @BatchChunkSize(1000)
     @Transaction
-    @SqlBatch("insert into group_user (group_id, user_id, created_on) values (:it.groupId, :it.userId, UNIX_TIMESTAMP())")
+    @SqlBatch("insert into `GroupUser` (groupId, userId, createdOn) values (:it.groupId, :it.userId, UNIX_TIMESTAMP())")
     public int[] createGroupUserBatch(@BindBean("it") Iterable<GroupUser> its);
 
     @Mapper(GroupMapper.class)
-    @SqlQuery("select A.id, A.organizer_id, A.name, A.description, A.order_id, A.status from `group` A inner join `group_user` B on A.id = B.group_id and B.user_id = :userId and A.deleted_on is null and B.deleted_on is null")
+    @SqlQuery("select A.id, A.organizerId, A.name, A.description, A.orderId, A.status from `Group` A inner join `GroupUser` B on A.id = B.groupId and B.userId = :userId and A.deletedOn is null and B.deletedOn is null")
     public List<Group> findGroupByUserId(@Bind("userId") String userId);
 
     //TODO findUserByGroup

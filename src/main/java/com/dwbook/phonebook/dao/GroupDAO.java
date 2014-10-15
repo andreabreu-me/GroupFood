@@ -16,15 +16,15 @@ public interface GroupDAO extends Transactional<GroupDAO> {
 
     @Transaction
     @GetGeneratedKeys
-    @SqlUpdate("insert into `group` (organizer_id, name, description, created_on) values (:organizerId, :name, :description, UNIX_TIMESTAMP())")
+    @SqlUpdate("insert into `Group` (organizerId, name, description, createdOn) values (:organizerId, :name, :description, UNIX_TIMESTAMP())")
     long createGroup(@Bind("organizerId") String organizerId, @Bind("name") String name, @Bind("description") String description);
 
     @BatchChunkSize(1000)
     @Transaction
-    @SqlBatch("insert into `group` (organizer_id, name, description, created_on) values (:it.organizerId, :it.name, :it.description, UNIX_TIMESTAMP())")
+    @SqlBatch("insert into `Group` (organizerId, name, description, createdOn) values (:it.organizerId, :it.name, :it.description, UNIX_TIMESTAMP())")
     int[] createGroupBatch (@BindBean("it") Iterable<Group> its);
 
     @Mapper(GroupMapper.class)
-    @SqlQuery("select id, organizer_id, name, description, order_id, status from `group` where id = :id")
+    @SqlQuery("select id, organizerId, name, description, orderId, status from `Group` where id = :id")
     Group findGroupById(@Bind("id") Long id);
 }
