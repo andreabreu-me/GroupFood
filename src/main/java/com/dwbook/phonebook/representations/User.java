@@ -26,7 +26,11 @@ public class User {
         this.googlePlusId = googlePlusId;
         this.createdOn = createdOn;
         this.updatedOn = updatedOn;
+<<<<<<< HEAD
         this.deletedOn = deletedOn;
+=======
+        this. deletedOn = deletedOn;
+>>>>>>> temp
     }
     
     public String getId() {
