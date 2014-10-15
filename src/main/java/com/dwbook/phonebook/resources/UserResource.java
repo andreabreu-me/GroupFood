@@ -1,6 +1,11 @@
 package com.dwbook.phonebook.resources;
 
 import io.dropwizard.auth.Auth;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> 5364cdbb3c9d73de3b766513d7ef57d38ee473e7
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -17,14 +22,32 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+<<<<<<< HEAD
+=======
+>>>>>>> temp
+>>>>>>> 5364cdbb3c9d73de3b766513d7ef57d38ee473e7
 import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.Handle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+<<<<<<< HEAD
 import com.dwbook.phonebook.dao.FacebookDAO;
 import com.dwbook.phonebook.dao.UserDAO;
 import com.dwbook.phonebook.representations.User;
+=======
+<<<<<<< HEAD
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+=======
+import com.dwbook.phonebook.dao.FacebookDAO;
+import com.dwbook.phonebook.dao.UserDAO;
+import com.dwbook.phonebook.representations.User;
+>>>>>>> temp
+>>>>>>> 5364cdbb3c9d73de3b766513d7ef57d38ee473e7
 
 /**
  * Created by howard on 10/12/14.
@@ -63,6 +86,17 @@ public class UserResource {
     }
 
     @POST
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+    public Response createUser(User user, @Auth Boolean isAuthenticated) throws URISyntaxException {
+        // store the new user
+    	Calendar calendar = Calendar.getInstance();
+    	Timestamp timeStamp = new Timestamp(calendar.getTime().getTime());
+        int newUserId = userDao.createUser(user.getId(), user.getFacebookId(), user.getGooglePlusId(), timeStamp.toString());
+        return Response.created(new URI(String.valueOf(newUserId))).build();
+=======
+>>>>>>> 5364cdbb3c9d73de3b766513d7ef57d38ee473e7
     public Response createUser(User user, @Auth Boolean isAuthenticated) throws URISyntaxException, SQLException{
     	   Handle handle = jdbi.open();
            handle.getConnection().setAutoCommit(false);
@@ -88,6 +122,10 @@ public class UserResource {
                handle.rollback();
                throw e;
            }
+<<<<<<< HEAD
+=======
+>>>>>>> temp
+>>>>>>> 5364cdbb3c9d73de3b766513d7ef57d38ee473e7
     }
 
     @POST
@@ -103,7 +141,17 @@ public class UserResource {
         // delete the user with the provided id
         try {
             userDao.begin();
+<<<<<<< HEAD
             userDao.deleteUser(id);
+=======
+<<<<<<< HEAD
+            Calendar calendar = Calendar.getInstance();
+        	Timestamp timeStamp = new Timestamp(calendar.getTime().getTime());
+            userDao.softDeleteUser(id, timeStamp.toString());
+=======
+            userDao.deleteUser(id);
+>>>>>>> temp
+>>>>>>> 5364cdbb3c9d73de3b766513d7ef57d38ee473e7
             System.out.println("after delete called");
             //throw new Exception("test exception");
             userDao.commit();
@@ -117,7 +165,17 @@ public class UserResource {
     @Path("/{id}")
     public Response updateUser(@PathParam("id") String id, User user, @Auth Boolean isAuthenticated) {
         // update the user with the provided ID
+<<<<<<< HEAD
         userDao.updateUser(id, user.getFacebookId(), user.getGooglePlusId());
+=======
+<<<<<<< HEAD
+    	Calendar calendar = Calendar.getInstance();
+    	Timestamp timeStamp = new Timestamp(calendar.getTime().getTime());
+        userDao.updateUser(id, user.getFacebookId(), user.getGooglePlusId(), timeStamp.toString());
+=======
+        userDao.updateUser(id, user.getFacebookId(), user.getGooglePlusId());
+>>>>>>> temp
+>>>>>>> 5364cdbb3c9d73de3b766513d7ef57d38ee473e7
         return Response.ok(
                 new User(id, user.getFacebookId(), user.getGooglePlusId(), user.getCreatedOn(), user.getUpdatedOn(), user.getDeletedOn())).build();
     }
