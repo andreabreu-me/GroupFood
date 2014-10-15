@@ -13,6 +13,6 @@ import java.sql.SQLException;
 public class UserMapper implements ResultSetMapper<User> {
     public User map(int index, ResultSet r, StatementContext ctx) throws SQLException {
     	//We don't have to show system info to users. they are there for us administrators
-        return new User(r.getString("id"), r.getString("facebook_id"), r.getString("googleplus_id"),r.getString("created_on"),r.getString("updated_on"),r.getString("deleted_on"));
+        return new User(r.getString("id"), r.getString("facebookId"), r.getString("googlePlusId"),r.getString("createdOn"),r.getString("updatedOn"),r.getString("deletedOn"));
     }
 }

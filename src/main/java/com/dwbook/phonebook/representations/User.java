@@ -5,46 +5,46 @@ package com.dwbook.phonebook.representations;
  */
 public class User {
     private final String id;
-    private final String facebook_id;
-    private final String googleplus_id;
-    private final String created_on;
-    private final String updated_on;
-    private final String deleted_on;
+    private final String facebookId;
+    private final String googlePlusId;
+    private final String createdOn;
+    private final String updatedOn;
+    private final String deletedOn;
 
     public User() {
         this.id= null;
-        this.facebook_id = null;
-        this.googleplus_id = null;
-        this.created_on = null;
-        this.updated_on = null;
-       this. deleted_on = null;
+        this.facebookId = null;
+        this.googlePlusId = null;
+        this.createdOn = null;
+        this.updatedOn = null;
+        this.deletedOn = null;
     }
 
-    public User(String id, String facebook_id, String googleplus_id, String created_on, String updated_on, String deleted_on) {
+    public User(String id, String facebookId, String googlePlusId, String createdOn, String updatedOn, String deletedOn) {
         this.id= id;
-        this.facebook_id = facebook_id;
-        this.googleplus_id = googleplus_id;
-        this.created_on = created_on;
-        this.updated_on = updated_on;
-        this. deleted_on = deleted_on;
+        this.facebookId = facebookId;
+        this.googlePlusId = googlePlusId;
+        this.createdOn = createdOn;
+        this.updatedOn = updatedOn;
+        this. deletedOn = deletedOn;
     }
     
     public String getId() {
         return id;
     }
-    public String getfacebook_id() {
-        return facebook_id;
+    public String getFacebookId() {
+        return facebookId;
     }
-    public String getgoogleplus_id() {
-        return googleplus_id;
+    public String getGooglePlusId() {
+        return googlePlusId;
     }
-    public String getcreated_on(){
-    	return created_on;
+    public String getCreatedOn(){
+    	return createdOn;
     }
-    public String getupdated_on(){
-    	return updated_on;
+    public String getUpdatedOn(){
+    	return updatedOn;
     }
-    public String getdeleted_on(){
-    	return deleted_on;
+    public String getDeletedOn(){
+    	return deletedOn;
     }
 }

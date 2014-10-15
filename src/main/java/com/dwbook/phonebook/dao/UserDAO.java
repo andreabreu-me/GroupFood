@@ -16,31 +16,31 @@ import java.util.List;
  */
 public interface UserDAO extends Transactional<UserDAO> {
 
-	//only show ones that did not have a deleted_on time stamp
+	//only show ones that did not have a deletedOn time stamp
     @Mapper(UserMapper.class)
-    @SqlQuery("select * from user where deleted_on is null")
+    @SqlQuery("select * from user where deletedOn is null")
     List<User> getAllUser();
 
-	//only show ones that did not have a deleted_on time stamp
+	//only show ones that did not have a deletedOn time stamp
     @Mapper(UserMapper.class)
-    @SqlQuery("select * from user where id = :id and deleted_on is null")
+    @SqlQuery("select * from User where id = :id and deletedOn is null")
     User getUserById(@Bind("id") String id);
 
     @GetGeneratedKeys
-    @SqlUpdate("insert into user (id, facebook_id, googleplus_id, created_on) values (:id, :facebook_id, :googleplus_id, :created_on)")
-    int createUser(@Bind("id") String id, @Bind("facebook_id") String facebook_id, @Bind("googleplus_id") String googleplus_id, @Bind("created_on") String timeStamp);
+    @SqlUpdate("insert into User (id, facebookId, googlePlusId, createdOn) values (:id, :facebookId, :googlePlusId, UNIX_TIMESTAMP())")
+    int createUser(@Bind("id") String id, @Bind("facebookId") String facebookId, @Bind("googlePlusId") String googlePlusId);
 
-	//only modify ones that did not have a deleted_on time stamp
+	//only modify ones that did not have a deletedOn time stamp
     @Transaction(TransactionIsolationLevel.REPEATABLE_READ)
-    @SqlUpdate("update user set facebook_id = :facebook_id, googleplus_id=:googleplus_id, updated_on = :updated_on where id= :id and deleted_on is null")
-    void updateUser(@Bind("id") String id, @Bind("facebook_id") String facebook_id, @Bind("googleplus_id") String googleplus_id, @Bind("updated_on") String timeStamp);
+    @SqlUpdate("update User set facebookId = :facebookId, googlePlusId=:googlePlusId, updated_on = UNIX_TIMESTAMP() where id= :id and deletedOn is null")
+    void updateUser(@Bind("id") String id, @Bind("facebookId") String facebookId, @Bind("googlePlusId") String googlePlusId);
 
-	//update data with a deleted_on time stamp without actually deleting it
-    @SqlUpdate("update user set deleted_on=:deleted_on where id = :id")
-    void deleteUser(@Bind("id") String id, @Bind("deleted_on")String timeStamp);
+	//update data with a deletedOn time stamp without actually deleting it
+    @SqlUpdate("update User set deletedOn=:UNIX_TIMESTAMP() where id = :id and deleteOn is null")
+    void deleteUser(@Bind("id") String id);
 
     //!!not touched as I am not sure what to do with this yet
-    @SqlBatch("insert into user (id, facebook_id, googleplus_id) values (:it.id, :it.facebook_id, :it.googleplus_id)")
+    @SqlBatch("insert into User (id, facebookId, googlePlusId) values (:it.id, :it.facebookId, :it.googlePlusId)")
     @BatchChunkSize(1000)
     public int[] batchCreateUser(@BindBean("it") Iterable<User> its);
 }

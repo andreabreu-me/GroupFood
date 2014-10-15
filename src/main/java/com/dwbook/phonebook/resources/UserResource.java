@@ -4,8 +4,7 @@ import io.dropwizard.auth.Auth;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.sql.Timestamp;
-import java.util.Calendar;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.ws.rs.DELETE;
@@ -19,9 +18,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.skife.jdbi.v2.DBI;
+import org.skife.jdbi.v2.Handle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dwbook.phonebook.dao.FacebookDAO;
 import com.dwbook.phonebook.dao.UserDAO;
 import com.dwbook.phonebook.representations.User;
 
@@ -29,21 +30,23 @@ import com.dwbook.phonebook.representations.User;
  * Created by howard on 10/12/14.
  */
 
-//!!warning: I believe Calendar works with the time zone in which the computer is running
-@Path("/user")
+@Path("/User")
 @Produces(MediaType.APPLICATION_JSON + "; charset=utf-8")
 public class UserResource {
 
     final static Logger logger = LoggerFactory.getLogger(UserResource.class);
     private final UserDAO userDao;
+    private final DBI jdbi;
 
     public UserResource(DBI jdbi) {
         userDao = jdbi.onDemand(UserDAO.class);
+        this.jdbi = jdbi;
     }
 
     @GET
     @Path("/all")
     public Response getAllUser(@Auth Boolean isAuthenticated) {
+    	
         List<User> allUser =  userDao.getAllUser();
         return Response.ok(allUser).build();
     }
@@ -60,12 +63,31 @@ public class UserResource {
     }
 
     @POST
-    public Response createUser(User user, @Auth Boolean isAuthenticated) throws URISyntaxException {
-        // store the new user
-    	Calendar calendar = Calendar.getInstance();
-    	Timestamp timeStamp = new Timestamp(calendar.getTime().getTime());
-        int newUserId = userDao.createUser(user.getId(), user.getfacebook_id(), user.getgoogleplus_id(), timeStamp.toString());
-        return Response.created(new URI(String.valueOf(newUserId))).build();
+    public Response createUser(User user, @Auth Boolean isAuthenticated) throws URISyntaxException, SQLException{
+    	   Handle handle = jdbi.open();
+           handle.getConnection().setAutoCommit(false);
+           try {
+               handle.begin();
+               FacebookDAO facebookDao = handle.attach(FacebookDAO.class);
+               // store the new user
+               int newUserId = userDao.createUser(user.getId(), user.getFacebookId(), user.getGooglePlusId());
+               /*methods to be installed
+                * String [] lotOfData = retrieveDataFromFBId()
+              */
+               String id = "ChanghaoFBId";
+               String userId = "Changha";
+               String token = "token1234";
+               String firstName = "Changhao";
+               String lastName = "Huang";
+               String email = "howard168222@hotmail.com";
+               facebookDao.createFacebook(id, userId, token, firstName, lastName, email);
+               handle.commit();
+               return Response.created(new URI(String.valueOf(newUserId))).build();
+           } 
+           catch (Exception e) {
+               handle.rollback();
+               throw e;
+           }
     }
 
     @POST
@@ -81,9 +103,7 @@ public class UserResource {
         // delete the user with the provided id
         try {
             userDao.begin();
-            Calendar calendar = Calendar.getInstance();
-        	Timestamp timeStamp = new Timestamp(calendar.getTime().getTime());
-            userDao.deleteUser(id, timeStamp.toString());
+            userDao.deleteUser(id);
             System.out.println("after delete called");
             //throw new Exception("test exception");
             userDao.commit();
@@ -97,10 +117,8 @@ public class UserResource {
     @Path("/{id}")
     public Response updateUser(@PathParam("id") String id, User user, @Auth Boolean isAuthenticated) {
         // update the user with the provided ID
-    	Calendar calendar = Calendar.getInstance();
-    	Timestamp timeStamp = new Timestamp(calendar.getTime().getTime());
-        userDao.updateUser(id, user.getfacebook_id(), user.getgoogleplus_id(), timeStamp.toString());
+        userDao.updateUser(id, user.getFacebookId(), user.getGooglePlusId());
         return Response.ok(
-                new User(id, user.getfacebook_id(), user.getgoogleplus_id(), user.getcreated_on(), user.getupdated_on(), user.getdeleted_on())).build();
+                new User(id, user.getFacebookId(), user.getGooglePlusId(), user.getCreatedOn(), user.getUpdatedOn(), user.getDeletedOn())).build();
     }
 }

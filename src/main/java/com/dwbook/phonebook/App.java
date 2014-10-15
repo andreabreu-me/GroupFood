@@ -3,6 +3,7 @@ package com.dwbook.phonebook;
 import com.dwbook.phonebook.resources.ContactResource;
 import com.dwbook.phonebook.resources.GroupResource;
 import com.dwbook.phonebook.resources.UserResource;
+import com.dwbook.phonebook.resources.FacebookResource;
 
 import io.dropwizard.auth.basic.BasicAuthProvider;
 import io.dropwizard.jdbi.DBIFactory;
@@ -40,6 +41,7 @@ public class App extends Application<PhonebookConfiguration> {
         e.jersey().register(new ContactResource(jdbi));
         e.jersey().register(new GroupResource(jdbi));
         e.jersey().register(new UserResource(jdbi));
+        e.jersey().register(new FacebookResource(jdbi));
 
         e.jersey().register(new BasicAuthProvider<Boolean>(
                 new PhonebookAuthenticator(), "Web Service Realm"));
