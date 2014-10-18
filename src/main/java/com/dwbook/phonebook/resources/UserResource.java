@@ -42,15 +42,13 @@ public class UserResource {
         userDao = jdbi.onDemand(UserDAO.class);
         this.jdbi = jdbi;
     }
-
     @GET
-    @Path("/all")
     public Response getAllUser(@Auth Boolean isAuthenticated) {
     	
         List<User> allUser =  userDao.getAllUser();
         return Response.ok(allUser).build();
     }
-
+    
     @GET
     @Path("/{id}")
     public Response getUser(@PathParam("id") String id, @Auth Boolean isAuthenticated) {
@@ -69,13 +67,14 @@ public class UserResource {
            try {
                handle.begin();
                FacebookDAO facebookDao = handle.attach(FacebookDAO.class);
+               UserDAO userDao = handle.attach(UserDAO.class);
                // store the new user
                int newUserId = userDao.createUser(user.getId(), user.getFacebookId(), user.getGooglePlusId());
                /*methods to be installed
                 * String [] lotOfData = retrieveDataFromFBId()
               */
                String id = "ChanghaoFBId";
-               String userId = "Changha";
+               String userId = "Changhao";
                String token = "token1234";
                String firstName = "Changhao";
                String lastName = "Huang";
@@ -99,26 +98,53 @@ public class UserResource {
 
     @DELETE
     @Path("/{id}")
-    public Response deleteUser(@PathParam("id") String id, @Auth Boolean isAuthenticated) {
+    public Response deleteUser(@PathParam("id") String id, @Auth Boolean isAuthenticated) throws SQLException {
         // delete the user with the provided id
-        try {
-            userDao.begin();
-            userDao.deleteUser(id);
-            System.out.println("after delete called");
-            //throw new Exception("test exception");
-            userDao.commit();
-        } catch (Exception e) {
-            userDao.rollback();
-        }
-        return Response.noContent().build();
+ 	   Handle handle = jdbi.open();
+       handle.getConnection().setAutoCommit(false);
+       try {
+           handle.begin();
+           User user = userDao.getUserById(id);
+           UserDAO userDao = handle.attach(UserDAO.class);
+           if(user.getFacebookId()!=null){
+        	   FacebookDAO facebookDao = handle.attach(FacebookDAO.class);
+               facebookDao.deleteFacebook(user.getFacebookId());
+           }
+           userDao.deleteUser(id);
+           handle.commit();
+           return Response.noContent().build();
+       } 
+       catch (Exception e) {
+           handle.rollback();
+           throw e;
+       }
     }
 
     @PUT
     @Path("/{id}")
-    public Response updateUser(@PathParam("id") String id, User user, @Auth Boolean isAuthenticated) {
+    public Response updateUser(@PathParam("id") String id, User user, @Auth Boolean isAuthenticated) throws SQLException {
         // update the user with the provided ID
-        userDao.updateUser(id, user.getFacebookId(), user.getGooglePlusId());
-        return Response.ok(
-                new User(id, user.getFacebookId(), user.getGooglePlusId(), user.getCreatedOn(), user.getUpdatedOn(), user.getDeletedOn())).build();
+    	 Handle handle = jdbi.open();
+         handle.getConnection().setAutoCommit(false);
+         try {
+             handle.begin();
+             User userOld = userDao.getUserById(id);
+             UserDAO userDao = handle.attach(UserDAO.class);
+             if(user.getFacebookId()!=null){
+          	    FacebookDAO facebookDao = handle.attach(FacebookDAO.class);
+          	  String firstName = "Changhao";
+              String lastName = "Huang";
+              String email = "howard168222@hotmail.com";
+                facebookDao.updateFacebook(user.getFacebookId(), firstName, lastName, email);
+             }
+             userDao.updateUser(id, user.getFacebookId(), user.getGooglePlusId());
+             handle.commit();
+             return Response.ok(
+                     new User(id, user.getFacebookId(), user.getGooglePlusId())).build();
+         } 
+         catch (Exception e) {
+             handle.rollback();
+             throw e;
+         }
     }
 }

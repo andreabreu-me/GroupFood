@@ -1,6 +1,7 @@
 SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS `User`;
 DROP TABLE IF EXISTS `Facebook`;
+DROP TABLE IF EXISTS `Friend`;
 DROP TABLE IF EXISTS `Order`;
 DROP TABLE IF EXISTS `Group`;
 DROP TABLE IF EXISTS `GroupUser`;
@@ -47,6 +48,26 @@ CREATE TABLE `Facebook` (
   CHARACTER SET utf8
   COLLATE utf8_general_ci;
 
+CREATE TABLE `Friend`(
+  `userId`	VARCHAR (128) NOT NULL,
+  `friendId`	VARCHAR (128) NOT NULL,
+  `socialNetwork`	VARCHAR (128) NOT NULL,
+  `relationship` VARCHAR (128),
+  
+     /* system info epoch */
+  `createdOn` INT UNSIGNED NOT NULL,
+  `updatedOn` INT UNSIGNED,
+  `deletedOn` INT UNSIGNED,
+  
+  	PRIMARY KEY (`userId`, `friendId`, `socialNetwork`),
+  	FOREIGN KEY (`userId`) REFERENCES `User`(`id`),
+  	FOREIGN KEY (`friendId`) REFERENCES `User`(`id`)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =utf8
+  CHARACTER SET utf8
+  COLLATE utf8_general_ci;
+  
 CREATE TABLE `Order`(
   `id`           INT UNSIGNED AUTO_INCREMENT,
   `organizerId` VARCHAR (128) NOT NULL,

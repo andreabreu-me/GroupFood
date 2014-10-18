@@ -18,7 +18,7 @@ public interface UserDAO extends Transactional<UserDAO> {
 
 	//only show ones that did not have a deletedOn time stamp
     @Mapper(UserMapper.class)
-    @SqlQuery("select * from user where deletedOn is null")
+    @SqlQuery("select * from User where deletedOn is null")
     List<User> getAllUser();
 
 	//only show ones that did not have a deletedOn time stamp
@@ -26,6 +26,7 @@ public interface UserDAO extends Transactional<UserDAO> {
     @SqlQuery("select * from User where id = :id and deletedOn is null")
     User getUserById(@Bind("id") String id);
 
+    @Transaction
     @GetGeneratedKeys
     @SqlUpdate("insert into User (id, facebookId, googlePlusId, createdOn) values (:id, :facebookId, :googlePlusId, UNIX_TIMESTAMP())")
     int createUser(@Bind("id") String id, @Bind("facebookId") String facebookId, @Bind("googlePlusId") String googlePlusId);
@@ -36,10 +37,12 @@ public interface UserDAO extends Transactional<UserDAO> {
     void updateUser(@Bind("id") String id, @Bind("facebookId") String facebookId, @Bind("googlePlusId") String googlePlusId);
 
 	//update data with a deletedOn time stamp without actually deleting it
+    @Transaction
     @SqlUpdate("update User set deletedOn=:UNIX_TIMESTAMP() where id = :id and deleteOn is null")
     void deleteUser(@Bind("id") String id);
 
     //!!not touched as I am not sure what to do with this yet
+    @Transaction
     @SqlBatch("insert into User (id, facebookId, googlePlusId) values (:it.id, :it.facebookId, :it.googlePlusId)")
     @BatchChunkSize(1000)
     public int[] batchCreateUser(@BindBean("it") Iterable<User> its);

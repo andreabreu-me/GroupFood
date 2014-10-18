@@ -1,5 +1,5 @@
 package com.dwbook.phonebook.resources;
-//123
+
 import io.dropwizard.auth.Auth;
 
 import java.net.URI;
@@ -27,7 +27,7 @@ import com.dwbook.phonebook.representations.Facebook;
  * Created by howard on 10/12/14.
  */
 
-@Path("/Facebook")
+@Path("/User/{userId}/Facebook")
 @Produces(MediaType.APPLICATION_JSON + "; charset=utf-8")
 public class FacebookResource {
 
@@ -39,17 +39,28 @@ public class FacebookResource {
     }
 
     @GET
-    @Path("/all")
-    public Response getAllFacebook(@Auth Boolean isAuthenticated) {
+    public Response getFacebookByUserId(@PathParam("userId") String userId, @Auth Boolean isAuthenticated) {
+        //logger.info(String.format("%s retrieved", userId));
+        // retrieve information about the facebook with the provided id
+        System.out.println(userId);
+        Facebook facebook = facebookDao.getFacebookByUserId(userId);
+        return Response
+                .ok(facebook)
+                .build();
+    }
+    //getAllFacebook()
+    /*
+    public Response getFacebookByUserId(@Auth Boolean isAuthenticated) {
         List<Facebook> allFacebook =  facebookDao.getAllFacebook();
         return Response.ok(allFacebook).build();
     }
-
+*/
     @GET
     @Path("/{id}")
-    public Response getFacebook(@PathParam("id") String id, @Auth Boolean isAuthenticated) {
+    public Response getFacebook(@PathParam("userId") String userId, @PathParam("id") String id, @Auth Boolean isAuthenticated) {
         logger.info(String.format("%s retrieved", id));
         // retrieve information about the facebook with the provided id
+        System.out.println(userId);
         Facebook facebook = facebookDao.getFacebookById(id);
         return Response
                 .ok(facebook)
@@ -92,6 +103,6 @@ public class FacebookResource {
         // update the facebook with the provided ID
         facebookDao.updateFacebook(id, facebook.getFirstName(), facebook.getLastName(), facebook.getEmail());
         return Response.ok(
-                new Facebook(id, facebook.getUserId(), facebook.getToken(), facebook.getFirstName(), facebook.getLastName(), facebook.getEmail(), facebook.getCreatedOn(), facebook.getUpdatedOn(), facebook.getDeletedOn())).build();
+                new Facebook(id, facebook.getUserId(), facebook.getToken(), facebook.getFirstName(), facebook.getLastName(), facebook.getEmail())).build();
     }
 }

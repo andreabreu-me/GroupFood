@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Created by curtishu on 10/11/14.
  */
-@Path("/Group")
+@Path("User/{userId}/Group")
 @Produces(MediaType.APPLICATION_JSON + "; charset=utf-8")
 public class GroupResource {
 
