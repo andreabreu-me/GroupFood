@@ -8,6 +8,8 @@ import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapper;
 import org.skife.jdbi.v2.sqlobject.mixins.Transactional;
 
+import java.util.List;
+
 /**
  * Created by curtishu on 10/11/14.
  */
@@ -27,6 +29,10 @@ public interface GroupDAO extends Transactional<GroupDAO> {
     @Mapper(GroupMapper.class)
     @SqlQuery("select id, organizerId, name, description, orderId, status from `Group` where id = :id and deletedOn is null")
     Group getGroupById(@Bind("id") long id);
+
+    @Mapper(GroupMapper.class)
+    @SqlQuery("select id, organizerId, name, description, orderId, status from `Group` where organizerId=:organizerId and deletedOn is null")
+    List<Group> findGroupsByOrganizerId(@Bind("organizerId") String organizerId);
 
     @Transaction
     @SqlUpdate("update `Group` set organizerId=:organizerId, name=:name, description=:description, updatedOn=UNIX_TIMESTAMP() where id=:id and deletedOn is null")
