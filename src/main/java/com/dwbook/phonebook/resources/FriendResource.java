@@ -66,7 +66,7 @@ public class FriendResource {
     }
 
     @POST
-    @Path("/batch_create")
+    @Path("/batch")
     public Response batchCreateFriend(List<Friend> friend, @Auth Boolean isAuthenticated) throws URISyntaxException {
         int[] ids = friendDao.batchCreateFriend(friend);
         return Response.created(new URI(String.valueOf(ids.length))).build();
