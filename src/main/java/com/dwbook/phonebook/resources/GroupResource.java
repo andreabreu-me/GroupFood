@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Created by curtishu on 10/11/14.
  */
-@Path("/User/{organizerId}/Group")
+@Path("/GroupUser")
 @Produces(MediaType.APPLICATION_JSON + "; charset=utf-8")
 public class GroupResource {
 
@@ -42,36 +42,150 @@ public class GroupResource {
         return actor != null && !actor.isEmpty() && actor.equals(owner);
     }
 
-    @GET
-    @Path("/{id}")
-    public Response getGroupById(@PathParam("id") long id, @Auth Boolean isAuthenticated) {
-        Group group = groupDAO.getGroupById(id);
-        return Response.ok(group).build();
+    public String getOrganizerIdByGroupId (long groupId) {
+        return groupDAO.getGroupById(groupId).getOrganizerId();
     }
 
     @GET
+    @Path("/User/{userId}/Group")
+    public Response findGroupsByUserId(@PathParam("userId") String userId, @Auth Boolean isAuthenticated) {
+        List<Group> groups = groupUserDAO.findGroupsByUserId(userId);
+        return Response.ok(groups).build();
+    }
+
+    @GET
+    @Path("/Organizer/{organizerId}/Group")
     public Response findGroupsByOrganizerId(@PathParam("organizerId") String organizerId, @Auth Boolean isAuthenticated) {
         List<Group> groups = groupDAO.findGroupsByOrganizerId(organizerId);
         return Response.ok(groups).build();
     }
 
+    @POST
+    @Path("/Group")
+    public Response createGroup(Group g,
+                                @QueryParam("actorId") String actorId,
+                                @Auth Boolean isAuthenticated) throws URISyntaxException, SQLException {
+
+        List<Group> list = new ArrayList<Group>();
+        list.add(g);
+        return createGroup(list, actorId, isAuthenticated);
+    }
+
+    @POST
+    @Path("/Group/batch")
+    public Response createGroup(final List<Group> groups,
+                                @QueryParam("actorId") String actorId,
+                                @Auth Boolean isAuthenticated) throws SQLException {
+
+        Handle handle = jdbi.open();
+        handle.getConnection().setAutoCommit(false);
+        try {
+            handle.begin();
+            GroupDAO groupDAO = handle.attach(GroupDAO.class);
+            GroupUserDAO groupUserDAO = handle.attach(GroupUserDAO.class);
+            int success = 0;
+            for (Group g : groups) {
+                if(!g.getOrganizerId().equals(actorId)) {
+                    throw new IllegalStateException("organizerId needs to match with the person creating the group");
+                }
+                long groupId = groupDAO.createGroup(g.getOrganizerId(), g.getName(), g.getDescription());
+                groupUserDAO.createGroupUser(groupId, g.getOrganizerId());
+                success++;
+            }
+            if (success != groups.size()) {
+                throw new IllegalStateException("error creating group, some groups cannot be created");
+            }
+            handle.commit();
+            return Response.created(new URI(String.valueOf(success))).build();
+        } catch (Exception e) {
+            handle.rollback();
+            e.printStackTrace();
+            return Response.serverError().build();
+        }
+    }
+
     @GET
-    @Path("/{id}/GroupUser")
+    @Path("/Group/{id}")
+    public Response getGroupById(@PathParam("id") long id, @Auth Boolean isAuthenticated) {
+        Group group = groupDAO.getGroupById(id);
+        return Response.ok(group).build();
+    }
+
+
+    @PUT
+    @Path("/Group/{id}")
+    public Response updateGroup(Group g,
+                                @PathParam("id") long id,
+                                @QueryParam("actorId") String actorId,
+                                @Auth Boolean isAuthenticated) {
+
+        //only organizerId can update name and description, TODO cannot change organizerId
+        if (!isAuthorized(actorId, getOrganizerIdByGroupId(id))) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+
+        try {
+            groupDAO.begin();
+            groupDAO.updateGroup(id, g.getOrganizerId(), g.getName(), g.getDescription());
+            groupDAO.commit();
+            return Response.ok(new Group(id, g.getOrganizerId(), g.getName(), g.getDescription(), 0, "")).build();
+        } catch (Exception e) {
+            groupDAO.rollback();
+            e.printStackTrace();
+            return Response.serverError().build();
+        }
+    }
+
+    @DELETE
+    @Path("/Group/{id}")
+    public Response deleteGroup(@PathParam("id") long id,
+                                @QueryParam("actorId") String actorId,
+                                @Auth Boolean isAuthenticated) throws SQLException {
+
+        // only organizer can delete the entry
+        if (!isAuthorized(actorId, getOrganizerIdByGroupId(id))) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+
+        // soft delete the group with the provided id
+        Handle handle = jdbi.open();
+        handle.getConnection().setAutoCommit(false);
+        try {
+            handle.begin();
+            GroupDAO gDAO = handle.attach(GroupDAO.class);
+            GroupUserDAO guDAO = handle.attach(GroupUserDAO.class);
+
+            //cascade mark GroupUser entries as deleted
+            gDAO.deleteGroup(id);
+            guDAO.deleteGroup(id);
+            handle.commit();
+            return Response.noContent().build();
+        } catch (Exception e) {
+            handle.rollback();
+            e.printStackTrace();
+            return Response.serverError().build();
+        }
+    }
+
+    @GET
+    @Path("/Group/{id}/User")
     public Response findUsersByGroupId(@PathParam("id") long id, @Auth Boolean isAuthenticated) {
         List<User> users = groupUserDAO.findUsersByGroupId(id);
         return Response.ok(users).build();
     }
 
     @DELETE
-    @Path("/{id}/GroupUser/{userId}")
+    @Path("/Group/{id}/User/{userId}")
     public Response deleteGroupUser(@PathParam("id") long groupId,
-                                    @PathParam("organizerId") String organizerId,
                                     @PathParam("userId") String userId,
                                     @QueryParam("actorId") String actorId,
                                     @Auth Boolean isAuthenticated) throws SQLException {
 
+        String organizerId = getOrganizerIdByGroupId(groupId);
+
         //only organizer or self can remove from group
-        if(!isAuthorized(actorId, organizerId) && !isAuthorized(actorId, userId)) {
+        if(!isAuthorized(actorId, organizerId)
+                && !isAuthorized(actorId, userId)) {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
 
@@ -99,15 +213,14 @@ public class GroupResource {
     }
 
     @POST
-    @Path("/{id}/GroupUser/{userId}")
+    @Path("/Group/{id}/User/{userId}")
     public Response createGroupUser(@PathParam("id") long groupId,
-                                    @PathParam("organizerId") String organizerId,
                                     @PathParam("userId") String userId,
                                     @QueryParam("actorId") String actorId,
                                     @Auth Boolean isAuthenticated) throws URISyntaxException {
 
-        //only organizer or self can add to group
-        if(!isAuthorized(actorId, organizerId) && !isAuthorized(actorId, userId)) {
+        //only organizer can add to group TODO maybe only allow organizer?
+        if(!isAuthorized(actorId, getOrganizerIdByGroupId(groupId)) && !isAuthorized(actorId, userId)) {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
 
@@ -116,15 +229,14 @@ public class GroupResource {
     }
 
     @POST
-    @Path("/{id}/GroupUser")
+    @Path("/Group/{id}/User")
     public Response createGroupUser(final List<String> userIds,
                                     @PathParam("id") long groupId,
-                                    @PathParam("organizerId") String organizerId,
                                     @QueryParam("actorId") String actorId,
                                     @Auth Boolean isAuthenticated) throws URISyntaxException {
 
         //only organizer can batch add
-        if(!isAuthorized(actorId, organizerId)) {
+        if(!isAuthorized(actorId, getOrganizerIdByGroupId(groupId))) {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
 
@@ -134,108 +246,5 @@ public class GroupResource {
         }
         groupUserDAO.createGroupUserBatch(groupUsers);
         return Response.created(new URI(String.format("/%d/GroupUser/%d", groupId, groupUsers.size()))).build();
-    }
-
-    @POST
-    public Response createGroup(Group g,
-                                @PathParam("organizerId") String organizerId,
-                                @QueryParam("actorId") String actorId,
-                                @Auth Boolean isAuthenticated) throws URISyntaxException, SQLException {
-
-        List<Group> list = new ArrayList<Group>();
-        list.add(g);
-        return createGroup(list, organizerId, actorId, isAuthenticated);
-    }
-
-    @POST
-    @Path("/batch")
-    public Response createGroup(final List<Group> groups,
-                                @PathParam("organizerId") String organizerId,
-                                @QueryParam("actorId") String actorId,
-                                @Auth Boolean isAuthenticated) throws SQLException {
-
-        if(!isAuthorized(actorId, organizerId)) {
-            return Response.status(Response.Status.FORBIDDEN).build();
-        }
-
-        Handle handle = jdbi.open();
-        handle.getConnection().setAutoCommit(false);
-        try {
-            handle.begin();
-            GroupDAO groupDAO = handle.attach(GroupDAO.class);
-            GroupUserDAO groupUserDAO = handle.attach(GroupUserDAO.class);
-            int success = 0;
-            for (Group g : groups) {
-                long groupId = groupDAO.createGroup(g.getOrganizerId(), g.getName(), g.getDescription());
-                groupUserDAO.createGroupUser(groupId, g.getOrganizerId());
-                success++;
-            }
-            if (success != groups.size()) {
-                throw new IllegalStateException("error creating group, some groups cannot be created");
-            }
-            handle.commit();
-            return Response.created(new URI(String.valueOf(success))).build();
-        } catch (Exception e) {
-            handle.rollback();
-            e.printStackTrace();
-            return Response.serverError().build();
-        }
-    }
-
-    @PUT
-    @Path("/{id}")
-    public Response updateGroup(Group g,
-                                @PathParam("organizerId") String organizerId,
-                                @PathParam("id") long id,
-                                @QueryParam("actorId") String actorId,
-                                @Auth Boolean isAuthenticated) {
-
-        //only owner can update name and description, cannot change organizerId
-        if (!isAuthorized(actorId, organizerId)) {
-            return Response.status(Response.Status.FORBIDDEN).build();
-        }
-
-        try {
-            groupDAO.begin();
-            groupDAO.updateGroup(id, g.getOrganizerId(), g.getName(), g.getDescription());
-            groupDAO.commit();
-            return Response.ok(new Group(id, g.getOrganizerId(), g.getName(), g.getDescription(), 0, "")).build();
-        } catch (Exception e) {
-            groupDAO.rollback();
-            e.printStackTrace();
-            return Response.serverError().build();
-        }
-    }
-
-    @DELETE
-    @Path("/{id}")
-    public Response deleteGroup(@PathParam("organizerId") String organizerId,
-                                @PathParam("id") long id,
-                                @QueryParam("actorId") String actorId,
-                                @Auth Boolean isAuthenticated) throws SQLException {
-
-        // only organizer can delete the entry
-        if (!isAuthorized(actorId, organizerId)) {
-            return Response.status(Response.Status.FORBIDDEN).build();
-        }
-
-        // soft delete the group with the provided id
-        Handle handle = jdbi.open();
-        handle.getConnection().setAutoCommit(false);
-        try {
-            handle.begin();
-            GroupDAO gDAO = handle.attach(GroupDAO.class);
-            GroupUserDAO guDAO = handle.attach(GroupUserDAO.class);
-
-            //cascade mark GroupUser entries as deleted
-            gDAO.deleteGroup(id);
-            guDAO.deleteGroup(id);
-            handle.commit();
-            return Response.noContent().build();
-        } catch (Exception e) {
-            handle.rollback();
-            e.printStackTrace();
-            return Response.serverError().build();
-        }
     }
 }

@@ -323,13 +323,22 @@ CREATE TABLE `MessageUser` (
   COLLATE utf8_general_ci;
 
 /* DML bootstrap test data */
-insert into `User`(`id`, `facebookId`, `createdOn`) values ('sansaid', 'sansafbid', UNIX_TIMESTAMP());
-insert into `User`(`id`, `facebookId`, `createdOn`) values ('snowid', 'snowfbid', UNIX_TIMESTAMP());
+insert into `User`(`id`, `facebookId`, `createdOn`) values ('sansaId', 'sansaFbId', UNIX_TIMESTAMP());
+insert into `User`(`id`, `facebookId`, `createdOn`) values ('snowId', 'snowFbId', UNIX_TIMESTAMP());
+insert into `User`(`id`, `facebookId`, `createdOn`) values ('bobId', 'bobFbId', UNIX_TIMESTAMP());
+insert into `User`(`id`, `facebookId`, `createdOn`) values ('aryaId', 'aryaFbId', UNIX_TIMESTAMP());
+insert into `User`(`id`, `facebookId`, `createdOn`) values ('williamId', 'williamFbId', UNIX_TIMESTAMP());
 
 insert into `Facebook`(`id`, `userId`, `token`, `firstName`, `lastName`, `email`, `createdOn`)
-values ('sansafbid','sansaid','token1234', 'sansa', '史塔克', 'sansa@stark.com', UNIX_TIMESTAMP());
+values ('sansaFbId','sansaId','tokenSansa', 'Sansa', '史塔克', 'sansa@stark.com', UNIX_TIMESTAMP());
 insert into `Facebook`(`id`, `userId`, `token`, `firstName`, `lastName`, `email`, `createdOn`)
-values ('snowfbid','snowid','token5678', '約翰', 'snow', 'jon@snow.com', UNIX_TIMESTAMP());
+values ('snowFbId','snowId','tokenSnow', '約翰', 'snow', 'jon@snow.com', UNIX_TIMESTAMP());
+insert into `Facebook`(`id`, `userId`, `token`, `firstName`, `lastName`, `email`, `createdOn`)
+values ('bobFbId','bobId','tokenBob', 'Bob', '克萊格', 'bob@cg.com', UNIX_TIMESTAMP());
+insert into `Facebook`(`id`, `userId`, `token`, `firstName`, `lastName`, `email`, `createdOn`)
+values ('aryaFbId','aryaId','tokenArya', 'Arya', '史塔克', 'arya@stark.com', UNIX_TIMESTAMP());
+insert into `Facebook`(`id`, `userId`, `token`, `firstName`, `lastName`, `email`, `createdOn`)
+values ('williamFbId','williamId','tokenWilliam', 'william', '劉', 'william@liu.com', UNIX_TIMESTAMP());
 
 /*
 insert into `Group`(`organizerId`,`name`,`description`,`createdOn`)

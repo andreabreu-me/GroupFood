@@ -23,7 +23,7 @@ public interface GroupUserDAO extends Transactional<GroupUserDAO> {
 
     @Transaction
     @BatchChunkSize(1000)
-    @SqlBatch("insert into `GroupUser` (groupId, userId, createdOn, updatedOn, deletedOn) values (it:groupId, it:userId, UNIX_TIMESTAMP(), NULL, NULL) ON DUPLICATE KEY UPDATE updatedOn=UNIX_TIMESTAMP(), deletedOn=NULL")
+    @SqlBatch("insert into `GroupUser` (groupId, userId, createdOn, updatedOn, deletedOn) values (:it.groupId, :it.userId, UNIX_TIMESTAMP(), NULL, NULL) ON DUPLICATE KEY UPDATE updatedOn=UNIX_TIMESTAMP(), deletedOn=NULL")
     public void createGroupUserBatch(@BindBean("it") Iterable<GroupUser> its);
 
     @Transaction
