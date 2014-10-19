@@ -4,7 +4,7 @@ import com.dwbook.phonebook.resources.ContactResource;
 import com.dwbook.phonebook.resources.GroupResource;
 import com.dwbook.phonebook.resources.UserResource;
 import com.dwbook.phonebook.resources.FacebookResource;
-import com.dwbook.phonebook.resources.FacebookResourceAdmin;
+import com.dwbook.phonebook.resources.AdminResource;
 import com.dwbook.phonebook.resources.FriendResource;
 
 import io.dropwizard.auth.basic.BasicAuthProvider;
@@ -44,7 +44,7 @@ public class App extends Application<PhonebookConfiguration> {
         e.jersey().register(new GroupResource(jdbi));
         e.jersey().register(new UserResource(jdbi));
         e.jersey().register(new FacebookResource(jdbi));
-        e.jersey().register(new FacebookResourceAdmin(jdbi));
+        e.jersey().register(new AdminResource(jdbi));
         e.jersey().register(new FriendResource(jdbi));
 
         e.jersey().register(new BasicAuthProvider<Boolean>(

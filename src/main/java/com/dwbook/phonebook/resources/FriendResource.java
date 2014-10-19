@@ -1,14 +1,9 @@
 package com.dwbook.phonebook.resources;
 import io.dropwizard.auth.Auth;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -26,6 +21,13 @@ import com.dwbook.phonebook.representations.Friend;
  * Created by howard on 10/17/14.
  */
 
+/*@GET 	
+ * 			User/{userId}/Friend												return all Friend where userId=userId
+ * 			User/{userId}/Friend/{friendId}							return Friend where friendId=friendId
+ * 			User/{userId}/Friend/{socialNetwork}					return Friend where socialNetwork=socialNetwork
+ * 			User/{userId}/Friend/{relationship}					return Friend where relationship=relationship
+ */
+
 @Path("/User/{userId}/Friend")
 @Produces(MediaType.APPLICATION_JSON + "; charset=utf-8")
 public class FriendResource {
@@ -39,9 +41,7 @@ public class FriendResource {
 
     @GET
     public Response getFriendByUserId(@PathParam("userId") String userId, @Auth Boolean isAuthenticated) {
-        //logger.info(String.format("%s retrieved", userId));
-        // retrieve information about the friend with the provided id
-        Friend friend = friendDao.getFriendByUserId(userId);
+    	List<Friend> friend = friendDao.getFriendByUserId(userId);
         return Response
                 .ok(friend)
                 .build();
@@ -49,26 +49,28 @@ public class FriendResource {
     
     @GET
     @Path("/{friendId}")
-    public Response getFriendByFriendId(@PathParam("friendId") String friendId, @Auth Boolean isAuthenticated) {
-        //logger.info(String.format("%s retrieved", userId));
-        // retrieve information about the friend with the provided id
-        Friend friend = friendDao.getFriendByFriendId(friendId);
+    public Response getFriendByFriendId(@PathParam("userId") String userId, @PathParam("friendId") String friendId, @Auth Boolean isAuthenticated) {
+    	List<Friend>  friend = friendDao.getFriendByFriendId(userId, friendId);
+        return Response
+                .ok(friend)
+                .build();
+    }   
+    /*
+    @GET
+    @Path("/{socialNetwork}")
+    public Response getFriendBySocialNetwork(@PathParam("userId") String userId, @PathParam("socialNetwork") String socialNetwork, @Auth Boolean isAuthenticated) {
+    	List<Friend>  friend = friendDao.getFriendBySocialNetwork(userId, socialNetwork);
         return Response
                 .ok(friend)
                 .build();
     }   
     
-    @POST
-    public Response createFriend(Friend friend, @Auth Boolean isAuthenticated) throws URISyntaxException {
-        // store the new friend
-        int newFriendId = friendDao.createFriend(friend.getUserId(), friend.getFriendId(), friend.getSocialNetwork(), friend.getRelationship());
-        return Response.created(new URI(String.valueOf(newFriendId))).build();
-    }
-
-    @POST
-    @Path("/batch")
-    public Response batchCreateFriend(List<Friend> friend, @Auth Boolean isAuthenticated) throws URISyntaxException {
-        int[] ids = friendDao.batchCreateFriend(friend);
-        return Response.created(new URI(String.valueOf(ids.length))).build();
-    }
+    @GET
+    @Path("/{relationship}")
+    public Response getFriendByRelationship(@PathParam("userId") String userId, @PathParam("relationship") String relationship, @Auth Boolean isAuthenticated) {
+    	List<Friend>  friend = friendDao.getFriendByRelationship(userId, relationship);
+        return Response
+                .ok(friend)
+                .build();
+    }   */
 }
