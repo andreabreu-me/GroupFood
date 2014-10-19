@@ -18,7 +18,7 @@ import com.dwbook.phonebook.dao.FriendDAO;
 import com.dwbook.phonebook.representations.Friend;
 
 /**
- * Created by howard on 10/17/14.
+ * Created by howard on 10/17/14
  */
 
 /*@GET 	
