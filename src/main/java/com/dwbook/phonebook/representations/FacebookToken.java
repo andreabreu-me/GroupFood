@@ -6,7 +6,6 @@ import java.util.List;
  * Created by howard on 10/18/14.
  */
 public class FacebookToken {
-    private final String id;
     private final String token;
     private final String firstName;
     private final String lastName;
@@ -14,7 +13,6 @@ public class FacebookToken {
     private final List<Friend> friend;
 
     public FacebookToken() {
-        this.id= null;
         this.token = null;
         this.firstName = null;
         this.lastName = null;
@@ -22,17 +20,12 @@ public class FacebookToken {
         this.friend = null;
     }
 
-    public FacebookToken(String id, String token, String firstName, String lastName, String email, List<Friend> friend) {
-        this.id= id;
+    public FacebookToken(String token, String firstName, String lastName, String email, List<Friend> friend) {
         this.token = token;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.friend = friend;
-    }
-    
-    public String getId() {
-        return id;
     }
 
 	public String getToken() {

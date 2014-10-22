@@ -54,7 +54,7 @@ public interface UserDAO extends Transactional<UserDAO> {
 
 	//update data with a deletedOn time stamp without actually deleting it
     @Transaction
-    @SqlUpdate("update User set deletedOn=:UNIX_TIMESTAMP() where id = :id and deleteOn is null")
+    @SqlUpdate("update User set deletedOn=:UNIX_TIMESTAMP() where id = :id and deletedOn is null")
     void deleteUser(@Bind("id") String id);
     
     /*

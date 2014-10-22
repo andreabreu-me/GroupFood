@@ -12,7 +12,6 @@ import java.sql.SQLException;
  */
 public class FriendMapper implements ResultSetMapper<Friend> {
     public Friend map(int index, ResultSet r, StatementContext ctx) throws SQLException {
-    	//We don't have to show system info to users. they are there for us administrators
-        return new Friend(r.getString("friendId"), r.getString("socialNetwork"), r.getString("relationship"));
+        return new Friend(r.getString("userId"), r.getString("friendId"), r.getString("socialNetwork"), r.getString("relationship"));
     }
 }

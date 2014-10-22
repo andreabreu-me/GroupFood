@@ -119,6 +119,11 @@ CREATE TABLE `Merchant`(
 
   /* TODO other contact info like lineId, whatsAppId, POS system to send/confirm orders */
 
+  /* system info epoch */
+  `createdOn` INT UNSIGNED NOT NULL,
+  `updatedOn` INT UNSIGNED,
+  `deletedOn` INT UNSIGNED,
+  
   PRIMARY KEY (`id`),
   INDEX `idx_name` (`name`),
   INDEX `idx_lat` (`latitude`),
@@ -137,13 +142,19 @@ CREATE TABLE `Item`(
   `description`  VARCHAR (512) NOT NULL,
   `unitPrice`    FLOAT (7, 2) NOT NULL,
   `dailyLimit`   INT,
+  `weight`	INT,
 
   /* TODO define ItemImage json and use S3 to persist images */
   `imageJson`    VARCHAR (1024),
 
   /* TODO define ItemFeedback to provide ratings and other feedback */
   `feedbackJson` VARCHAR (1024),
-
+  
+  /* system info epoch */
+  `createdOn` INT UNSIGNED NOT NULL,
+  `updatedOn` INT UNSIGNED,
+  `deletedOn` INT UNSIGNED,
+  
   PRIMARY KEY (`id`),
   FOREIGN KEY (`merchantId`) REFERENCES `Merchant`(`id`),
   INDEX `idx_title` (`title`)
@@ -328,6 +339,7 @@ insert into `User`(`id`, `facebookId`, `createdOn`) values ('snowId', 'snowFbId'
 insert into `User`(`id`, `facebookId`, `createdOn`) values ('bobId', 'bobFbId', UNIX_TIMESTAMP());
 insert into `User`(`id`, `facebookId`, `createdOn`) values ('aryaId', 'aryaFbId', UNIX_TIMESTAMP());
 insert into `User`(`id`, `facebookId`, `createdOn`) values ('williamId', 'williamFbId', UNIX_TIMESTAMP());
+
 
 insert into `Facebook`(`id`, `userId`, `token`, `firstName`, `lastName`, `email`, `createdOn`)
 values ('sansaFbId','sansaId','tokenSansa', 'Sansa', '史塔克', 'sansa@stark.com', UNIX_TIMESTAMP());

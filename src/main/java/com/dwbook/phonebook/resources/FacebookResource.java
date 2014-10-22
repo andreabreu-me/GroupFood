@@ -4,8 +4,8 @@ import io.dropwizard.auth.Auth;
 
 import java.net.URISyntaxException;
 import java.sql.SQLException;
+import java.util.List;
 
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -24,6 +24,7 @@ import com.dwbook.phonebook.dao.FriendDAO;
 import com.dwbook.phonebook.dao.UserDAO;
 import com.dwbook.phonebook.representations.Facebook;
 import com.dwbook.phonebook.representations.FacebookToken;
+import com.dwbook.phonebook.representations.Friend;
 import com.dwbook.phonebook.representations.User;
 
 /**
@@ -91,11 +92,12 @@ public class FacebookResource {
            FriendDAO friendDao = handle.attach(FriendDAO.class);
            
            facebookDao.updateFacebookByUserId(userId, facebookToken.getToken(), facebookToken.getFirstName(), facebookToken.getLastName(), facebookToken.getEmail());
+           List<Friend> friend = friendDao.getFriendByUserId(userId);
+           friendDao.batchDelete(userId, friend);
            friendDao.updateFriend(userId, facebookToken.getFriend());
-           
-        	handle.commit();
+           handle.commit();
         	return Response.ok(
-                new Facebook(user.getFacebookId(), facebookToken.getToken(), facebookToken.getFirstName(), facebookToken.getLastName(), facebookToken.getEmail())).build();
+                new Facebook(userId, user.getFacebookId(), facebookToken.getToken(), facebookToken.getFirstName(), facebookToken.getLastName(), facebookToken.getEmail())).build();
        } 
         catch (Exception e) {
             handle.rollback();

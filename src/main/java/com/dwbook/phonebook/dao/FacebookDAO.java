@@ -61,7 +61,7 @@ public interface FacebookDAO extends Transactional<FacebookDAO> {
     void updateFacebookByUserId(@Bind("userId") String userId, @Bind("token") String token, @Bind("firstName") String firstName, @Bind("lastName") String lastName, @Bind("email") String email);
 
     @Transaction
-    @SqlUpdate("update Facebook set deletedOn=:UNIX_TIMESTAMP() where userId = :userId and deleteOn is null")
+    @SqlUpdate("update Facebook set deletedOn=:UNIX_TIMESTAMP() where userId = :userId and deletedOn is null")
 	void deleteFacebookByUserId(@Bind("userId") String userId);
 
     /*

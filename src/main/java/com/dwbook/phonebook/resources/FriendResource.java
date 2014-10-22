@@ -50,14 +50,14 @@ public class FriendResource {
     @GET
     @Path("/{friendId}")
     public Response getFriendByFriendId(@PathParam("userId") String userId, @PathParam("friendId") String friendId, @Auth Boolean isAuthenticated) {
-    	List<Friend>  friend = friendDao.getFriendByFriendId(userId, friendId);
+    	Friend  friend = friendDao.getFriendByFriendId(userId, friendId);
         return Response
                 .ok(friend)
                 .build();
     }   
-    /*
+    
     @GET
-    @Path("/{socialNetwork}")
+    @Path("/socialNetwork/{socialNetwork}")
     public Response getFriendBySocialNetwork(@PathParam("userId") String userId, @PathParam("socialNetwork") String socialNetwork, @Auth Boolean isAuthenticated) {
     	List<Friend>  friend = friendDao.getFriendBySocialNetwork(userId, socialNetwork);
         return Response
@@ -66,11 +66,11 @@ public class FriendResource {
     }   
     
     @GET
-    @Path("/{relationship}")
+    @Path("/relationship/{relationship}")
     public Response getFriendByRelationship(@PathParam("userId") String userId, @PathParam("relationship") String relationship, @Auth Boolean isAuthenticated) {
     	List<Friend>  friend = friendDao.getFriendByRelationship(userId, relationship);
         return Response
                 .ok(friend)
                 .build();
-    }   */
+    }   
 }

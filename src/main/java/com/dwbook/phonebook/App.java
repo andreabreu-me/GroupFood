@@ -1,22 +1,23 @@
 package com.dwbook.phonebook;
 
-import com.dwbook.phonebook.resources.ContactResource;
-import com.dwbook.phonebook.resources.GroupResource;
-import com.dwbook.phonebook.resources.UserResource;
-import com.dwbook.phonebook.resources.FacebookResource;
-import com.dwbook.phonebook.resources.AdminResource;
-import com.dwbook.phonebook.resources.FriendResource;
-
+import io.dropwizard.Application;
 import io.dropwizard.auth.basic.BasicAuthProvider;
 import io.dropwizard.jdbi.DBIFactory;
+import io.dropwizard.setup.Bootstrap;
+import io.dropwizard.setup.Environment;
 
 import org.skife.jdbi.v2.DBI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.dropwizard.Application;
-import io.dropwizard.setup.Bootstrap;
-import io.dropwizard.setup.Environment;
+import com.dwbook.phonebook.resources.AdminResource;
+import com.dwbook.phonebook.resources.ContactResource;
+import com.dwbook.phonebook.resources.FacebookResource;
+import com.dwbook.phonebook.resources.FriendResource;
+import com.dwbook.phonebook.resources.GroupResource;
+import com.dwbook.phonebook.resources.ItemResource;
+import com.dwbook.phonebook.resources.MerchantResource;
+import com.dwbook.phonebook.resources.UserResource;
 
 public class App extends Application<PhonebookConfiguration> {
 
@@ -46,6 +47,8 @@ public class App extends Application<PhonebookConfiguration> {
         e.jersey().register(new FacebookResource(jdbi));
         e.jersey().register(new AdminResource(jdbi));
         e.jersey().register(new FriendResource(jdbi));
+        e.jersey().register(new MerchantResource(jdbi));
+        e.jersey().register(new ItemResource(jdbi));
 
         e.jersey().register(new BasicAuthProvider<Boolean>(
                 new PhonebookAuthenticator(), "Web Service Realm"));

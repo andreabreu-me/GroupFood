@@ -1,28 +1,27 @@
 package com.dwbook.phonebook.resources;
 import io.dropwizard.auth.Auth;
 
-import java.net.URISyntaxException;
-import java.sql.SQLException;
 import java.util.List;
 
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.skife.jdbi.v2.DBI;
-import org.skife.jdbi.v2.Handle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dwbook.phonebook.dao.FacebookDAO;
 import com.dwbook.phonebook.dao.FriendDAO;
+import com.dwbook.phonebook.dao.ItemDAO;
+import com.dwbook.phonebook.dao.MerchantDAO;
 import com.dwbook.phonebook.dao.UserDAO;
 import com.dwbook.phonebook.representations.Facebook;
 import com.dwbook.phonebook.representations.Friend;
+import com.dwbook.phonebook.representations.Item;
+import com.dwbook.phonebook.representations.Merchant;
 import com.dwbook.phonebook.representations.User;
 
 /**
@@ -36,8 +35,12 @@ import com.dwbook.phonebook.representations.User;
  *				Admin/Facebook/all			return Facebook table
  *				Admin/Friend						return active Friend
  *				Admin/Friend/all				return Friend table
+ *				Admin/Merchant				return active merchant
+ *				Admin/Merchant/all			return merchant table
+ *				Admin/Item						return active item
+ *				Admin/Item/all					return item table
  *@Delete
- *				Admin/User/{id}				soft delete user id = {id}, soft delete Facebook and Friend associates to the user
+ *				Admin/User/{id}				soft delete user id = {id}, soft delete Facebook and Friend associates to the user  (not in use)
  */
 
 @Path("/Admin")
@@ -48,12 +51,16 @@ public class AdminResource {
     private final FacebookDAO facebookDao;
     private final UserDAO userDao;
     private final FriendDAO friendDao;
+    private final MerchantDAO merchantDao;
+    private final ItemDAO itemDao;
     private final DBI jdbi;
 
     public AdminResource(DBI jdbi) {
         facebookDao = jdbi.onDemand(FacebookDAO.class);
         userDao = jdbi.onDemand(UserDAO.class);
         friendDao = jdbi.onDemand(FriendDAO.class);
+        merchantDao = jdbi.onDemand(MerchantDAO.class);
+        itemDao = jdbi.onDemand(ItemDAO.class);
         this.jdbi = jdbi;
     }
     
@@ -98,6 +105,34 @@ public class AdminResource {
         return Response.ok(allFriend).build();
     }
     
+    @Path("/Merchant")
+    @GET
+    public Response getAllActiveMerchant(@Auth Boolean isAuthenticated) {
+        List<Merchant> allMerchant =  merchantDao.getAllActiveMerchant();
+        return Response.ok(allMerchant).build();
+    }    
+    
+    @Path("/Merchant/all")
+    @GET
+    public Response getAllMerchant(@Auth Boolean isAuthenticated) {
+        List<Merchant> allMerchant =  merchantDao.getAllMerchant();
+        return Response.ok(allMerchant).build();
+    }
+    
+    @Path("/Item")
+    @GET
+    public Response getAllActiveItem(@Auth Boolean isAuthenticated) {
+        List<Item> allItem =  itemDao.getAllActiveItem();
+        return Response.ok(allItem).build();
+    }    
+    
+    @Path("/Item/all")
+    @GET
+    public Response getAllItem(@Auth Boolean isAuthenticated) {
+        List<Item> allItem =  itemDao.getAllItem();
+        return Response.ok(allItem).build();
+    }
+    /*
     @Path("/User/{id}")
     @DELETE
     public Response deleteUserById(@PathParam("id") String id, @Auth Boolean isAuthenticated) throws URISyntaxException, SQLException{
@@ -120,5 +155,5 @@ public class AdminResource {
            handle.rollback();
            throw e;
        }
-    }
+    }*/
 }

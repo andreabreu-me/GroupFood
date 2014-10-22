@@ -4,6 +4,7 @@ package com.dwbook.phonebook.representations;
  * Created by howard on 10/12/14.
  */
 public class Facebook {
+    private final String userId;
     private final String id;
     private final String token;
     private final String firstName;
@@ -11,6 +12,7 @@ public class Facebook {
     private final String email;
 
     public Facebook() {
+        this.userId= null;
         this.id= null;
         this.token = null;
         this.firstName = null;
@@ -18,7 +20,8 @@ public class Facebook {
         this.email = null;
     }
 
-    public Facebook(String id, String token, String firstName, String lastName, String email) {
+    public Facebook(String userId, String id, String token, String firstName, String lastName, String email) {
+    	this.userId=userId;
         this.id= id;
         this.token = token;
         this.firstName = firstName;
@@ -44,5 +47,9 @@ public class Facebook {
 
 	public String getEmail() {
 		return email;
+	}
+
+	public String getUserId() {
+		return userId;
 	}
 }

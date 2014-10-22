@@ -30,7 +30,8 @@ import com.dwbook.phonebook.representations.Friend;
  * 		getFriendByRelationship			FriendResource
  * 		batchCreateFriend						UserResource
  * 		deleteFriendByUserId				AdminResource
- * 		updateFriend								FacebookResource**
+ * 		batchDelete								FacebookResource
+ * 		updateFriend								FacebookResource
  * Not in use:
  * 		createFriend
  * 		deleteFacebookFriendByUserId		FacebookResource
@@ -52,7 +53,7 @@ public interface FriendDAO extends Transactional<FriendDAO> {
     
     @Mapper(FriendMapper.class)
     @SqlQuery("select * from Friend where userId = :userId and friendId = :friendId and deletedOn is null")
-	List<Friend> getFriendByFriendId(@Bind("userId") String userId, @Bind("friendId")String friendId);
+	Friend getFriendByFriendId(@Bind("userId") String userId, @Bind("friendId")String friendId);
     
     @Mapper(FriendMapper.class)
     @SqlQuery("select * from Friend where userId = :userId and socialNetwork = :socialNetwork and deletedOn is null")
@@ -69,13 +70,16 @@ public interface FriendDAO extends Transactional<FriendDAO> {
     public int[] batchCreateFriend(@Bind("userId") String userId, @BindBean("it") Iterable<Friend> its);
 
     @Transaction
-    @SqlUpdate("update Friend set deletedOn=:UNIX_TIMESTAMP() where (userId = :userId or friendId=:userId) and deleteOn is null")
+    @SqlUpdate("update Friend set deletedOn=UNIX_TIMESTAMP() where (userId = :userId or friendId=:userId) and deletedOn is null")
 	void deleteFriendByUserId(@Bind("userId") String userId);
 
     @Transaction
-    @SqlBatch("")
-	void updateFriend(@Bind("userId") String userId, @BindBean("it") Iterable<Friend> its);
+    @SqlBatch("update Friend set deletedOn=UNIX_TIMESTAMP() where userId = :userId and friendId = :it.friendId and socialNetwork=:it.socialNetwork and deletedOn is null")
+	void batchDelete(@Bind("userId") String userId, @BindBean("it") Iterable<Friend> its);
 	
+    @Transaction
+    @SqlBatch("insert into Friend (userId, friendId, socialNetwork, relationship, createdOn) values (:userId, :it.friendId, :it.socialNetwork, :it.relationship, UNIX_TIMESTAMP()) on duplicate key update relationship = :it.relationship, updatedOn = UNIX_TIMESTAMP(), deletedOn = null ")
+	void updateFriend(@Bind("userId") String userId, @BindBean("it") Iterable<Friend> its);
 	
     /*
      *  below are methods that are not used or need to be updated.
@@ -88,5 +92,7 @@ public interface FriendDAO extends Transactional<FriendDAO> {
     @Transaction
     @SqlUpdate("update Friend set deletedOn=:UNIX_TIMESTAMP() where userId = :userId and deleteOn is null")
 	void deleteFacebookFriendByUserId(@Bind("userId") String userId);
+
+
 
 }
