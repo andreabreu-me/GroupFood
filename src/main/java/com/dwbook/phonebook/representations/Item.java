@@ -9,7 +9,7 @@ public class Item {
     private final String title;
     private final String description;
     private final float unitPrice;
-    private final int limit;
+    private final int dailyLimit;
     private final int weight;
     private final String imageJson;
     private final String feedbackJson;
@@ -20,19 +20,19 @@ public class Item {
         this.title = null;
         this.description = null;
         this.unitPrice = 0;
-        this.limit = 0;
+        this.dailyLimit = 0;
         this.weight = 0;
         this.imageJson = null;
         this.feedbackJson = null;
     }
 
-    public Item(int id, int merchantId, String title, String description, float unitPrice, int limit, int weight, String imageJson, String feedbackJson) {
+    public Item(int id, int merchantId, String title, String description, float unitPrice, int dailyLimit, int weight, String imageJson, String feedbackJson) {
         this.id= id;
         this.merchantId = merchantId;
         this.title = title;
         this.description = description;
         this.unitPrice = unitPrice;
-        this.limit = limit;
+        this.dailyLimit = dailyLimit;
         this.weight = weight;
         this.imageJson = imageJson;
         this.feedbackJson = feedbackJson;
@@ -58,8 +58,8 @@ public class Item {
 		return unitPrice;
 	}
 
-	public int getLimit() {
-		return limit;
+	public int getDailyLimit() {
+		return dailyLimit;
 	}
 
 	public int getWeight() {

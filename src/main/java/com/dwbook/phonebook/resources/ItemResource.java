@@ -71,7 +71,7 @@ public class ItemResource {
     }
     
     @GET
-    @Path("Descending")
+    @Path("/Descending")
     public Response getItemInDescendingWeightOrder(@PathParam("merchantId") int merchantId, @Auth Boolean isAuthenticated) {
     	List<Item> allItem =  itemDao.getItemByDescendingOrder(merchantId);
         return Response
@@ -97,17 +97,17 @@ public class ItemResource {
     }        
     @PUT
     @Path("/{id}")
-    public Response createItem(Item item, @PathParam("id") String id, @Auth Boolean isAuthenticated) throws URISyntaxException, SQLException{
+    public Response createItem(Item item, @PathParam("id") int id, @PathParam("merchantId") int merchantId, @Auth Boolean isAuthenticated) throws URISyntaxException, SQLException{
     	   Handle handle = jdbi.open();
            handle.getConnection().setAutoCommit(false);
            try {
                handle.begin();
                ItemDAO ItemDao = handle.attach(ItemDAO.class);
-               ItemDao.updateItem(item.getId(), item.getMerchantId(),item.getTitle(),item.getDescription(),item.getUnitPrice(),item.getLimit(),item.getWeight(),item.getImageJson(),item.getFeedbackJson());
+               ItemDao.updateItem(id, merchantId, item.getTitle(),item.getDescription(),item.getUnitPrice(),item.getDailyLimit(),item.getWeight(),item.getImageJson(),item.getFeedbackJson());
                
                handle.commit();
                return Response.ok(
-                       new Item(item.getId(), item.getMerchantId(),item.getTitle(),item.getDescription(),item.getUnitPrice(),item.getLimit(),item.getWeight(),item.getImageJson(),item.getFeedbackJson())).build();
+                       new Item(id, merchantId,item.getTitle(),item.getDescription(),item.getUnitPrice(),item.getDailyLimit(),item.getWeight(),item.getImageJson(),item.getFeedbackJson())).build();
            } 
            catch (Exception e) {
                handle.rollback();

@@ -45,8 +45,8 @@ public interface ItemDAO extends Transactional<ItemDAO> {
     List<Item> getAllItem();
     
     @Mapper(ItemMapper.class)
-    @SqlQuery("select * from Item where merchantId=:merchantId, deletedOn is null")
-	List<Item> getItemByMerchantId(int merchantId);
+    @SqlQuery("select * from Item where merchantId=:merchantId and deletedOn is null")
+	List<Item> getItemByMerchantId(@Bind("merchantId") int merchantId);
 
 	//only show ones that did not have a deletedOn time stamp
     @Mapper(ItemMapper.class)
@@ -54,27 +54,26 @@ public interface ItemDAO extends Transactional<ItemDAO> {
     Item getItemById(@Bind("id") int id);
 
     @Mapper(ItemMapper.class)
-    @SqlQuery("select * from Item where merchantId = :merchantId, deletedOn is null order by weight desc")
-	List<Item> getItemByDescendingOrder(int merchantId);
+    @SqlQuery("select * from Item where merchantId = :merchantId and deletedOn is null order by weight desc")
+	List<Item> getItemByDescendingOrder(@Bind("merchantId") int merchantId);
 	
     @Transaction
     @GetGeneratedKeys
-    @SqlUpdate("insert into Item (id, merchantId, title, description, unitPrice, limit, weight, imageJson, feedbackJson, createdOn) "
-    		+ "values (:it.id, :it.merchantId, :it.title, :it.description, :it.unitPrice, :it.limit, :it.weight, :it.imageJson, :it.feedbackJson, UNIX_TIMESTAMP()) on duplication key update"
-    		+ "merchantId=:it.merchantId, title=:it.title, description=:it.description, unitPrice=:it.unitPrice, limit=:it.limit, weight=:it.weight, imageJson=:it.imageJson, feedbackJson=:it.feedbackJson, updatedOn = UNIX_TIMESTAMP(), deletedOn = null")
+    @SqlBatch("insert into Item (id, merchantId, title, description, unitPrice, dailyLimit, weight, imageJson, feedbackJson, createdOn) "
+    		+ "values (NULL, :it.merchantId, :it.title, :it.description, :it.unitPrice, :it.dailyLimit, :it.weight, :it.imageJson, :it.feedbackJson, UNIX_TIMESTAMP())")
     int[] batchCreateItem(@BindBean("it") Iterable<Item> its);
 
     @Transaction
-    @SqlUpdate("update Item set merchantId=:merchantId, title=:title, description=:description, unitPrice=:unitPrice, limit=:limit, weight=:weight, imageJson=:imageJson, feedbackJson=:feedbackJson, updated_on = UNIX_TIMESTAMP() where id= :id and deletedOn is null")
+    @SqlUpdate("update Item set merchantId=:merchantId, title=:title, description=:description, unitPrice=:unitPrice, dailyLimit=:dailyLimit, weight=:weight, imageJson=:imageJson, feedbackJson=:feedbackJson, updatedOn = UNIX_TIMESTAMP() where id= :id and deletedOn is null")
 	void updateItem(@Bind("id") int id, @Bind("merchantId") int merchantId, @Bind("title") String title, @Bind("description") String description,
-			@Bind("unitPrice") float unitPrice, @Bind("limit") int limit, @Bind("weight") int weight, @Bind("imageJson") String imageJson, @Bind("feedbackJson") String feedbackJson);
+			@Bind("unitPrice") float unitPrice, @Bind("dailyLimit") int dailyLimit, @Bind("weight") int weight, @Bind("imageJson") String imageJson, @Bind("feedbackJson") String feedbackJson);
     
     @Transaction
-    @SqlUpdate("update Item set deletedOn=:UNIX_TIMESTAMP() where merchantId = :merchantId and deletedOn is null")
+    @SqlUpdate("update Item set deletedOn=UNIX_TIMESTAMP() where merchantId = :merchantId and deletedOn is null")
 	void deleteItemByMerchantId(@Bind("merchantId") int merchantId);
 
     @Transaction
-    @SqlUpdate("update Item set deletedOn=:UNIX_TIMESTAMP() where id = :id and deletedOn is null")
+    @SqlUpdate("update Item set deletedOn=UNIX_TIMESTAMP() where id = :id and deletedOn is null")
     void deleteItem(@Bind("id") int id);
 
 

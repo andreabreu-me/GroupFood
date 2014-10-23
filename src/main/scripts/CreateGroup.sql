@@ -73,25 +73,6 @@ CREATE TABLE `Friend`(
   DEFAULT CHARSET =utf8
   CHARACTER SET utf8
   COLLATE utf8_general_ci;
-  
-CREATE TABLE `Order`(
-  `id`           INT UNSIGNED AUTO_INCREMENT,
-  `organizerId` VARCHAR (128) NOT NULL,
-  `deliveryAddress` VARCHAR(512) NOT NULL,
-  `deliveryLatitude` FLOAT(10, 6) NOT NULL,
-  `deliveryLongitude` FLOAT(10, 6) NOT NULL,
-  `status` VARCHAR(64),
-
-  PRIMARY KEY (`id`),
-  FOREIGN KEY (`organizerId`) REFERENCES `User`(`id`),
-  INDEX `idx_lat` (`deliveryLatitude`),
-  INDEX `idx_long` (`deliveryLongitude`)
-)
-  ENGINE =InnoDB
-  DEFAULT CHARSET =utf8
-  CHARACTER SET utf8
-  COLLATE utf8_general_ci
-  AUTO_INCREMENT =1;
 
 CREATE TABLE `Merchant`(
   `id`                  INT UNSIGNED AUTO_INCREMENT,
@@ -165,6 +146,25 @@ CREATE TABLE `Item`(
   COLLATE utf8_general_ci
   AUTO_INCREMENT =1;
 
+CREATE TABLE `Order`(
+  `id`           INT UNSIGNED AUTO_INCREMENT,
+  `organizerId` VARCHAR (128) NOT NULL,
+  `deliveryAddress` VARCHAR(512) NOT NULL,
+  `deliveryLatitude` FLOAT(10, 6) NOT NULL,
+  `deliveryLongitude` FLOAT(10, 6) NOT NULL,
+  `status` VARCHAR(64),
+
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`organizerId`) REFERENCES `User`(`id`),
+  INDEX `idx_lat` (`deliveryLatitude`),
+  INDEX `idx_long` (`deliveryLongitude`)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =utf8
+  CHARACTER SET utf8
+  COLLATE utf8_general_ci
+  AUTO_INCREMENT =1;
+  
 /**
  * can be hand selected by organizer of order
  * can be imported from previously saved groups

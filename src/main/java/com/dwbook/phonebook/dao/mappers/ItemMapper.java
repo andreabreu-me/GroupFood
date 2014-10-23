@@ -15,6 +15,6 @@ public class ItemMapper implements ResultSetMapper<Item> {
     public Item map(int index, ResultSet r, StatementContext ctx) throws SQLException {
     	//We don't have to show system info to users. they are there for us administrators
         return new Item(r.getInt("id"), r.getInt("merchantId"), r.getString("title"), r.getString("description"), r.getFloat("unitPrice")
-        		, r.getInt("limit"), r.getInt("weight"), r.getString("imageJson"), r.getString("feedbackJson"));
+        		, r.getInt("dailyLimit"), r.getInt("weight"), r.getString("imageJson"), r.getString("feedbackJson"));
     }
 }
