@@ -10,22 +10,18 @@ public class Friend {
     private final String relationship;
 
     public Friend() {
-        this.userId = null;
+    	this.userId = null;
         this.friendId = null;
         this.socialNetwork = null;
         this.relationship = null;
     }
 
     public Friend(String userId, String friendId, String socialNetwok, String relationship) {
-        this.userId = userId;
+    	this.userId = userId;
         this.friendId = friendId;
         this.socialNetwork = socialNetwok;
         this.relationship = relationship;
     }
-
-	public String getUserId() {
-		return userId;
-	}
 
 	public String getFriendId() {
 		return friendId;
@@ -37,6 +33,10 @@ public class Friend {
 
 	public String getRelationship() {
 		return relationship;
+	}
+
+	public String getUserId() {
+		return userId;
 	}
 
 }

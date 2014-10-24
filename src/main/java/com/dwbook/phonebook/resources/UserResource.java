@@ -5,12 +5,9 @@ import io.dropwizard.auth.Auth;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
-import java.util.List;
 
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -23,11 +20,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dwbook.phonebook.dao.FacebookDAO;
+import com.dwbook.phonebook.dao.FriendDAO;
 import com.dwbook.phonebook.dao.UserDAO;
+import com.dwbook.phonebook.representations.SignIn;
 import com.dwbook.phonebook.representations.User;
 
 /**
  * Created by howard on 10/12/14.
+ */
+
+/*@GET 	
+ * 			User/{id}							return user id = id if deleteOn is not null
+ *@Post
+ *				User								create entries in User, Facebook, and Friend
  */
 
 @Path("/User")
@@ -42,18 +47,10 @@ public class UserResource {
         userDao = jdbi.onDemand(UserDAO.class);
         this.jdbi = jdbi;
     }
-    @GET
-    public Response getAllUser(@Auth Boolean isAuthenticated) {
-    	
-        List<User> allUser =  userDao.getAllUser();
-        return Response.ok(allUser).build();
-    }
-    
+      
     @GET
     @Path("/{id}")
     public Response getUser(@PathParam("id") String id, @Auth Boolean isAuthenticated) {
-        logger.info(String.format("%s retrieved", id));
-        // retrieve information about the user with the provided id
         User user = userDao.getUserById(id);
         return Response
                 .ok(user)
@@ -61,25 +58,19 @@ public class UserResource {
     }
 
     @POST
-    public Response createUser(User user, @Auth Boolean isAuthenticated) throws URISyntaxException, SQLException{
+    public Response createUser(SignIn signIn, @Auth Boolean isAuthenticated) throws URISyntaxException, SQLException{
     	   Handle handle = jdbi.open();
            handle.getConnection().setAutoCommit(false);
            try {
                handle.begin();
                FacebookDAO facebookDao = handle.attach(FacebookDAO.class);
                UserDAO userDao = handle.attach(UserDAO.class);
-               // store the new user
-               int newUserId = userDao.createUser(user.getId(), user.getFacebookId(), user.getGooglePlusId());
-               /*methods to be installed
-                * String [] lotOfData = retrieveDataFromFBId()
-              */
-               String id = "ChanghaoFBId";
-               String userId = "Changhao";
-               String token = "token1234";
-               String firstName = "Changhao";
-               String lastName = "Huang";
-               String email = "howard168222@hotmail.com";
-               facebookDao.createFacebook(id, userId, token, firstName, lastName, email);
+               FriendDAO friendDao = handle.attach(FriendDAO.class);
+               
+               int newUserId = userDao.createUser(signIn.getUserId(), signIn.getFacebookId(), signIn.getGooglePlusId());
+               facebookDao.createFacebook(signIn.getFacebookId(), signIn.getUserId(), signIn.getToken(), signIn.getFirstName(), signIn.getLastName(), signIn.getEmail());
+               friendDao.batchCreateFriend(signIn.getUserId(), signIn.getFriend());
+               
                handle.commit();
                return Response.created(new URI(String.valueOf(newUserId))).build();
            } 
@@ -88,49 +79,17 @@ public class UserResource {
                throw e;
            }
     }
-
-    @POST
-    @Path("/batch_create")
-    public Response batchCreateUser(List<User> user, @Auth Boolean isAuthenticated) throws URISyntaxException {
-        int[] ids = userDao.batchCreateUser(user);
-        return Response.created(new URI(String.valueOf(ids.length))).build();
-    }
-
-    @DELETE
-    @Path("/{id}")
-    public Response deleteUser(@PathParam("id") String id, @Auth Boolean isAuthenticated) throws SQLException {
-        // delete the user with the provided id
- 	   Handle handle = jdbi.open();
-       handle.getConnection().setAutoCommit(false);
-       try {
-           handle.begin();
-           User user = userDao.getUserById(id);
-           UserDAO userDao = handle.attach(UserDAO.class);
-           if(user.getFacebookId()!=null){
-        	   FacebookDAO facebookDao = handle.attach(FacebookDAO.class);
-               facebookDao.deleteFacebook(user.getFacebookId());
-           }
-           userDao.deleteUser(id);
-           handle.commit();
-           return Response.noContent().build();
-       } 
-       catch (Exception e) {
-           handle.rollback();
-           throw e;
-       }
-    }
-
+/*        	this method should be update once we support more than one social network
+ * 		SignIn should also be updated so it supports "google token"
     @PUT
     @Path("/{id}")
-    public Response updateUser(@PathParam("id") String id, User user, @Auth Boolean isAuthenticated) throws SQLException {
-        // update the user with the provided ID
-    	 Handle handle = jdbi.open();
-         handle.getConnection().setAutoCommit(false);
-         try {
+    public Response updateUser(@PathParam("id") String id, SignIn signIn, @Auth Boolean isAuthenticated) throws SQLException {
+    	Handle handle = jdbi.open();
+        handle.getConnection().setAutoCommit(false);
+        try {
              handle.begin();
-             User userOld = userDao.getUserById(id);
              UserDAO userDao = handle.attach(UserDAO.class);
-             if(user.getFacebookId()!=null){
+             if(signIn.getFacebookId()!=null){
           	    FacebookDAO facebookDao = handle.attach(FacebookDAO.class);
           	  String firstName = "Changhao";
               String lastName = "Huang";
@@ -138,6 +97,7 @@ public class UserResource {
                 facebookDao.updateFacebook(user.getFacebookId(), firstName, lastName, email);
              }
              userDao.updateUser(id, user.getFacebookId(), user.getGooglePlusId());
+             
              handle.commit();
              return Response.ok(
                      new User(id, user.getFacebookId(), user.getGooglePlusId())).build();
@@ -147,4 +107,5 @@ public class UserResource {
              throw e;
          }
     }
+    */
 }

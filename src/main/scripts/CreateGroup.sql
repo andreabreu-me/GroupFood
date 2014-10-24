@@ -73,25 +73,6 @@ CREATE TABLE `Friend`(
   DEFAULT CHARSET =utf8
   CHARACTER SET utf8
   COLLATE utf8_general_ci;
-  
-CREATE TABLE `Order`(
-  `id`           INT UNSIGNED AUTO_INCREMENT,
-  `organizerId` VARCHAR (128) NOT NULL,
-  `deliveryAddress` VARCHAR(512) NOT NULL,
-  `deliveryLatitude` FLOAT(10, 6) NOT NULL,
-  `deliveryLongitude` FLOAT(10, 6) NOT NULL,
-  `status` VARCHAR(64),
-
-  PRIMARY KEY (`id`),
-  FOREIGN KEY (`organizerId`) REFERENCES `User`(`id`),
-  INDEX `idx_lat` (`deliveryLatitude`),
-  INDEX `idx_long` (`deliveryLongitude`)
-)
-  ENGINE =InnoDB
-  DEFAULT CHARSET =utf8
-  CHARACTER SET utf8
-  COLLATE utf8_general_ci
-  AUTO_INCREMENT =1;
 
 CREATE TABLE `Merchant`(
   `id`                  INT UNSIGNED AUTO_INCREMENT,
@@ -119,6 +100,11 @@ CREATE TABLE `Merchant`(
 
   /* TODO other contact info like lineId, whatsAppId, POS system to send/confirm orders */
 
+  /* system info epoch */
+  `createdOn` INT UNSIGNED NOT NULL,
+  `updatedOn` INT UNSIGNED,
+  `deletedOn` INT UNSIGNED,
+  
   PRIMARY KEY (`id`),
   INDEX `idx_name` (`name`),
   INDEX `idx_lat` (`latitude`),
@@ -137,13 +123,19 @@ CREATE TABLE `Item`(
   `description`  VARCHAR (512) NOT NULL,
   `unitPrice`    FLOAT (7, 2) NOT NULL,
   `dailyLimit`   INT,
+  `weight`	INT,
 
   /* TODO define ItemImage json and use S3 to persist images */
   `imageJson`    VARCHAR (1024),
 
   /* TODO define ItemFeedback to provide ratings and other feedback */
   `feedbackJson` VARCHAR (1024),
-
+  
+  /* system info epoch */
+  `createdOn` INT UNSIGNED NOT NULL,
+  `updatedOn` INT UNSIGNED,
+  `deletedOn` INT UNSIGNED,
+  
   PRIMARY KEY (`id`),
   FOREIGN KEY (`merchantId`) REFERENCES `Merchant`(`id`),
   INDEX `idx_title` (`title`)
@@ -154,6 +146,25 @@ CREATE TABLE `Item`(
   COLLATE utf8_general_ci
   AUTO_INCREMENT =1;
 
+CREATE TABLE `Order`(
+  `id`           INT UNSIGNED AUTO_INCREMENT,
+  `organizerId` VARCHAR (128) NOT NULL,
+  `deliveryAddress` VARCHAR(512) NOT NULL,
+  `deliveryLatitude` FLOAT(10, 6) NOT NULL,
+  `deliveryLongitude` FLOAT(10, 6) NOT NULL,
+  `status` VARCHAR(64),
+
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`organizerId`) REFERENCES `User`(`id`),
+  INDEX `idx_lat` (`deliveryLatitude`),
+  INDEX `idx_long` (`deliveryLongitude`)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =utf8
+  CHARACTER SET utf8
+  COLLATE utf8_general_ci
+  AUTO_INCREMENT =1;
+  
 /**
  * can be hand selected by organizer of order
  * can be imported from previously saved groups
@@ -326,6 +337,7 @@ insert into `User`(`id`, `facebookId`, `createdOn`) values ('snowId', 'snowFbId'
 insert into `User`(`id`, `facebookId`, `createdOn`) values ('bobId', 'bobFbId', UNIX_TIMESTAMP());
 insert into `User`(`id`, `facebookId`, `createdOn`) values ('aryaId', 'aryaFbId', UNIX_TIMESTAMP());
 insert into `User`(`id`, `facebookId`, `createdOn`) values ('williamId', 'williamFbId', UNIX_TIMESTAMP());
+
 
 insert into `Facebook`(`id`, `userId`, `token`, `firstName`, `lastName`, `email`, `createdOn`)
 values ('sansaFbId','sansaId','tokenSansa', 'Sansa', '史塔克', 'sansa@stark.com', UNIX_TIMESTAMP());

@@ -1,36 +1,31 @@
 package com.dwbook.phonebook.representations;
 
+import java.util.List;
+
 /**
- * Created by howard on 10/12/14.
+ * Created by howard on 10/18/14.
  */
-public class Facebook {
-    private final String userId;
-    private final String id;
+public class FacebookToken {
     private final String token;
     private final String firstName;
     private final String lastName;
     private final String email;
+    private final List<Friend> friend;
 
-    public Facebook() {
-        this.userId= null;
-        this.id= null;
+    public FacebookToken() {
         this.token = null;
         this.firstName = null;
         this.lastName = null;
         this.email = null;
+        this.friend = null;
     }
 
-    public Facebook(String userId, String id, String token, String firstName, String lastName, String email) {
-    	this.userId=userId;
-        this.id= id;
+    public FacebookToken(String token, String firstName, String lastName, String email, List<Friend> friend) {
         this.token = token;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-    }
-    
-    public String getId() {
-        return id;
+        this.friend = friend;
     }
 
 	public String getToken() {
@@ -49,7 +44,7 @@ public class Facebook {
 		return email;
 	}
 
-	public String getUserId() {
-		return userId;
+	public List<Friend> getFriend() {
+		return friend;
 	}
 }
