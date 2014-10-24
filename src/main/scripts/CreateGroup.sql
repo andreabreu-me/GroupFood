@@ -149,10 +149,17 @@ CREATE TABLE `Item`(
 CREATE TABLE `Order`(
   `id`           INT UNSIGNED AUTO_INCREMENT,
   `organizerId` VARCHAR (128) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
+  `description` VARCHAR(512),
   `deliveryAddress` VARCHAR(512) NOT NULL,
   `deliveryLatitude` FLOAT(10, 6) NOT NULL,
   `deliveryLongitude` FLOAT(10, 6) NOT NULL,
   `status` VARCHAR(64),
+
+  /* system info epoch */
+  `createdOn` INT UNSIGNED NOT NULL,
+  `updatedOn` INT UNSIGNED,
+  `deletedOn` INT UNSIGNED,
 
   PRIMARY KEY (`id`),
   FOREIGN KEY (`organizerId`) REFERENCES `User`(`id`),
