@@ -12,7 +12,6 @@ import org.skife.jdbi.v2.DBI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-<<<<<<< HEAD
 import com.dwbook.phonebook.resources.AdminResource;
 
 import com.dwbook.phonebook.resources.ContactResource;
@@ -25,8 +24,6 @@ import com.dwbook.phonebook.resources.OrderResource;
 import com.dwbook.phonebook.resources.UserResource;
 import com.dwbook.phonebook.resources.OrderUserResource;
 
-=======
->>>>>>> 6e0a7cf8028d58e23ed47626fd9e6e4015fc8c1f
 public class App extends Application<PhonebookConfiguration> {
 
     private static final Logger LOGGER =LoggerFactory.getLogger(App.class);
