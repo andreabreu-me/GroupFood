@@ -1,5 +1,7 @@
 package com.dwbook.phonebook;
 
+import com.dwbook.phonebook.resources.*;
+
 import io.dropwizard.Application;
 import io.dropwizard.auth.basic.BasicAuthProvider;
 import io.dropwizard.jdbi.DBIFactory;
@@ -10,6 +12,7 @@ import org.skife.jdbi.v2.DBI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+<<<<<<< HEAD
 import com.dwbook.phonebook.resources.AdminResource;
 
 import com.dwbook.phonebook.resources.ContactResource;
@@ -22,6 +25,8 @@ import com.dwbook.phonebook.resources.OrderResource;
 import com.dwbook.phonebook.resources.UserResource;
 import com.dwbook.phonebook.resources.OrderUserResource;
 
+=======
+>>>>>>> 6e0a7cf8028d58e23ed47626fd9e6e4015fc8c1f
 public class App extends Application<PhonebookConfiguration> {
 
     private static final Logger LOGGER =LoggerFactory.getLogger(App.class);
@@ -50,6 +55,7 @@ public class App extends Application<PhonebookConfiguration> {
         e.jersey().register(new FacebookResource(jdbi));
         e.jersey().register(new AdminResource(jdbi));
         e.jersey().register(new FriendResource(jdbi));
+        e.jersey().register(new MessageResource(jdbi));
         e.jersey().register(new MerchantResource(jdbi));
         e.jersey().register(new ItemResource(jdbi));
         e.jersey().register(new OrderResource(jdbi));
