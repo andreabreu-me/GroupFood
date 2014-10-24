@@ -27,6 +27,8 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON + "; charset=utf-8")
 public class GroupResource {
 
+    //TODO use a different name for class variable to avoid confusion
+
     final static Logger logger = LoggerFactory.getLogger(GroupResource.class);
     private final DBI jdbi;
     private final GroupDAO groupDAO;

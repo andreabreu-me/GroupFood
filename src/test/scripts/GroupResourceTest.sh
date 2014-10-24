@@ -43,5 +43,5 @@ curl -X PUT -H "Content-Type: application/json; charset=UTF-8" \
 echo -e "\n verify arya's group memebership and new description"
 curl -X GET -u john_doe:secret http://localhost:8080/GroupUser/User/aryaId/Group
 
-echo -e "\n sansa decided to delete group"
-curl -X DELETE -u john_doe:secret http://localhost:8080/GroupUser/Group/1?actorId=sansaId
+#echo -e "\n sansa decided to delete group"
+#curl -X DELETE -u john_doe:secret http://localhost:8080/GroupUser/Group/1?actorId=sansaId

@@ -1,6 +1,7 @@
 package com.dwbook.phonebook.dao;
 
 import com.dwbook.phonebook.dao.mappers.GroupMapper;
+import com.dwbook.phonebook.dao.mappers.GroupUserMapper;
 import com.dwbook.phonebook.dao.mappers.UserMapper;
 import com.dwbook.phonebook.representations.Group;
 import com.dwbook.phonebook.representations.GroupUser;
@@ -45,4 +46,8 @@ public interface GroupUserDAO extends Transactional<GroupUserDAO> {
     @Mapper(UserMapper.class)
     @SqlQuery("select A.id, A.facebookId, A.googlePlusId from `User` A inner join `GroupUser` B on A.id = B.userId and B.groupId = :groupId and A.deletedOn is null and B.deletedOn is null")
     public List<User> findUsersByGroupId(@Bind("groupId") long groupId);
+
+    @Mapper(GroupUserMapper.class)
+    @SqlQuery("select groupId, userId from `GroupUser` where groupId = :groupId and userId = :userId and deletedOn is null")
+    public GroupUser checkGroupUser(@Bind("groupId") long groupId, @Bind("userId") String userId);
 }

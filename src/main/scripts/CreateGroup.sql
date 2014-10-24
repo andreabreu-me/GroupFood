@@ -282,7 +282,7 @@ CREATE TABLE `Message` (
   `content` VARCHAR(2048) NOT NULL,
 
   /* system info epoch */
-  `createdOn` INT UNSIGNED NOT NULL,
+  `createdOn` INT UNSIGNED NOT NULL,    /* this is sent time */
   `updatedOn` INT UNSIGNED,
   `deletedOn` INT UNSIGNED,
 
@@ -290,7 +290,6 @@ CREATE TABLE `Message` (
   FOREIGN KEY (`groupId`) REFERENCES `Group`(`id`),
   FOREIGN KEY (`authorId`) REFERENCES `User`(`id`),
 
-  /* this is sent time */
   INDEX `idx_create` (`createdOn`),
   INDEX `idx_delete` (`deletedOn`)
 )
@@ -305,7 +304,7 @@ CREATE TABLE `MessageUser` (
   `userId` VARCHAR (128) NOT NULL,
 
   /* system info epoch */
-  `createdOn` INT UNSIGNED NOT NULL,
+  `createdOn` INT UNSIGNED NOT NULL,    /*this is read time */
   `updatedOn` INT UNSIGNED,
   `deletedOn` INT UNSIGNED,
 
@@ -313,7 +312,6 @@ CREATE TABLE `MessageUser` (
   FOREIGN KEY (`messageId`) REFERENCES `Message`(`id`),
   FOREIGN KEY (`userId`) REFERENCES `User`(`id`),
 
-  /*this is read time */
   INDEX `idx_create` (`createdOn`),
   INDEX `idx_delete` (`deletedOn`)
 )
