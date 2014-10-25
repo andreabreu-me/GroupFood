@@ -27,6 +27,12 @@ curl --verbose -k -H "Content-Type:Application/json; charset=UTF-8" -X PUT \
 -d '{"name":"new order1","description":"des","deliveryAddress":"deliveryAddress","deliveryLatitude":"234.56","deliveryLongitude":"234.56","status":"updated"}' \
 -u john_doe:secret http://localhost:8080/User/sansaId/Order/1
 
+echo -e "\nsansaid adds arya and bob into Order 1"
+curl --verbose -k -H "Content-Type:Application/json; charset=UTF-8" -X POST \
+-d '[{"orderId":"1","userId":"aryaId"},{"orderId":"1","userId":"bobId"}]' \
+-u john_doe:secret http://localhost:8080/User/sansaId/Order/1/OrderUser
+
+
 echo -e "\sansaId deletes order2"
 curl --verbose -k  -X DELETE -u john_doe:secret http://localhost:8080/User/sansaId/Order/2
 

@@ -39,21 +39,20 @@ public interface OrderUserDAO extends Transactional<OrderUserDAO> {
     @SqlQuery("select * from `OrderUser`")
     List<OrderUser> getAllOrderUser();
 
-	//only show ones that did not have a deletedOn time stamp
     @Mapper(OrderUserMapper.class)
-    @SqlQuery("select orderId from `OrderUser` where userId = :userId and deletedOn is null")
+    @SqlQuery("select * from `OrderUser` where userId = :userId and deletedOn is null")
     List<OrderUser> getOrderByUserId(@Bind("userId") String userId);
     
     @Mapper(OrderUserMapper.class)
-    @SqlQuery("select userId from `OrderUser` where orderId = :orderId and deletedOn is null")
-    OrderUser getUserByOrderId(@Bind("orderId") int orderId);
+    @SqlQuery("select * from `OrderUser` where orderId = :orderId and deletedOn is null")
+    List<OrderUser> getUserByOrderId(@Bind("orderId") int orderId);
 
     @Transaction
     @SqlUpdate("update `OrderUser` set deletedOn=UNIX_TIMESTAMP() where userId = :userId and orderId=:orderId and deletedOn is null")
     void leaveOrder(@Bind("orderId") int orderId, @Bind("userId") String userId);
 
     @Transaction
-    @SqlBatch("insert into `OrderUser` (orderId, userId, createdOn) values (:orderId, :it, UNIX_TIMESTAMP()) ")
+    @SqlBatch("insert into `OrderUser` (orderId, userId, createdOn) values (:it.orderId, :it.userId, UNIX_TIMESTAMP()) ")
     @BatchChunkSize(1000)
-    public int[] batchCreateOrderUser(@Bind("orderId") int orderId, @BindBean("it") Iterable<String> its);
+    public int[] batchCreateOrderUser(@BindBean("it") List<OrderUser> its);
 }

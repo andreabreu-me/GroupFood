@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import com.dwbook.phonebook.dao.OrderDAO;
 import com.dwbook.phonebook.dao.OrderUserDAO;
 import com.dwbook.phonebook.representations.Order;
+import com.dwbook.phonebook.representations.OrderUser;
 
 /**
  * Created by howard on 10/23/14.
@@ -40,7 +41,7 @@ import com.dwbook.phonebook.representations.Order;
  *@PUT
  *				/User/{userId}/Order/{orderId}																									update order's data
  *@DELETE	
- *				/User/{userId}/Order/{orderId}											delete a order
+ *				/User/{userId}/Order/{orderId}																									delete an order
  */
 
 @Path("/User/{userId}/Order")
@@ -80,9 +81,9 @@ public class OrderResource {
                OrderDAO orderDao = handle.attach(OrderDAO.class);
                OrderUserDAO orderUserDao = handle.attach(OrderUserDAO.class);
                int newOrderId = orderDao.createOrder(userId, order);
-               List<String> users = new ArrayList<String>();
-               users.add(userId);
-               orderUserDao.batchCreateOrderUser(newOrderId,users);
+               List<OrderUser> orderUser = new ArrayList<OrderUser>();
+               orderUser.add(new OrderUser(newOrderId, userId));
+               orderUserDao.batchCreateOrderUser(orderUser);
                handle.commit();
                return Response.created(new URI(String.valueOf(newOrderId))).build();
            } 
@@ -94,13 +95,13 @@ public class OrderResource {
     
     @POST
     @Path("/{orderId}/OrderUser")
-    public Response createOrderUser(@PathParam("orderId") int orderId, List<String> users, @Auth Boolean isAuthenticated) throws URISyntaxException, SQLException{
+    public Response createOrderUser(@PathParam("orderId") int orderId, List<OrderUser> orderUser, @Auth Boolean isAuthenticated) throws URISyntaxException, SQLException{
  	   Handle handle = jdbi.open();
         handle.getConnection().setAutoCommit(false);
         try {
             handle.begin();
             OrderUserDAO orderUserDao = handle.attach(OrderUserDAO.class);
-            int[] ids = orderUserDao.batchCreateOrderUser(orderId,users);
+            int[] ids = orderUserDao.batchCreateOrderUser(orderUser);
             handle.commit();
             return Response.created(new URI(String.valueOf(ids.length))).build();
         } 

@@ -32,7 +32,7 @@ import com.dwbook.phonebook.representations.OrderUser;
  * 			to do:
  * 			/User/{userId}/OrderUser/{orderUserId}/participant/{participantId}									return all item that participant chose in that orderUserId
  *@DELETE	
- *				/User/{userId}/OrderUser/{orderUserId}																		leave an orderUser group
+ *				/User/{userId}/OrderUser/{orderUserId}																				leave an orderUser group
  */
 
 @Path("/User/{userId}/OrderUser")
@@ -57,7 +57,7 @@ public class OrderUserResource {
     @GET
     @Path("/{orderUserId}")
     public Response getOrderUserByOrderUserId(@PathParam("orderUserId") int orderUserId, @Auth Boolean isAuthenticated) {
-        OrderUser OrderUser = orderUserDao.getUserByOrderId(orderUserId);
+    	List<OrderUser> OrderUser = orderUserDao.getUserByOrderId(orderUserId);
         return Response
                 .ok(OrderUser)
                 .build();
