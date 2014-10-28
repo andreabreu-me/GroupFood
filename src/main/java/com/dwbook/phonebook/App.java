@@ -23,6 +23,7 @@ import com.dwbook.phonebook.resources.MerchantResource;
 import com.dwbook.phonebook.resources.OrderResource;
 import com.dwbook.phonebook.resources.UserResource;
 import com.dwbook.phonebook.resources.OrderUserResource;
+import com.dwbook.phonebook.resources.OrderMerchantResource;
 
 public class App extends Application<PhonebookConfiguration> {
 
@@ -57,6 +58,7 @@ public class App extends Application<PhonebookConfiguration> {
         e.jersey().register(new ItemResource(jdbi));
         e.jersey().register(new OrderResource(jdbi));
         e.jersey().register(new OrderUserResource(jdbi));
+        e.jersey().register(new OrderMerchantResource(jdbi));
 
         e.jersey().register(new BasicAuthProvider<Boolean>(
                 new PhonebookAuthenticator(), "Web Service Realm"));

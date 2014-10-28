@@ -26,7 +26,8 @@ import com.dwbook.phonebook.representations.OrderUser;
  * 		getOrderByUserId								OrderUserResource
  * 		getUserByOrderId								OrderUserResource
  * 		leaveOrder											OrderUserResource
- * 		batchCreateOrderUser						OrderResource
+ * 		batchCreateOrderUser						OrderUserResource
+ * 		deleteByOrderId								OrderResource
  */
 
 public interface OrderUserDAO extends Transactional<OrderUserDAO> {
@@ -52,7 +53,11 @@ public interface OrderUserDAO extends Transactional<OrderUserDAO> {
     void leaveOrder(@Bind("orderId") int orderId, @Bind("userId") String userId);
 
     @Transaction
-    @SqlBatch("insert into `OrderUser` (orderId, userId, createdOn) values (:it.orderId, :it.userId, UNIX_TIMESTAMP()) ")
+    @SqlBatch("insert into `OrderUser` (orderId, userId, createdOn) values (:it.orderId, :it.userId, UNIX_TIMESTAMP()) on duplicate key update updatedOn=UNIX_TIMESTAMP(), deletedOn=null")
     @BatchChunkSize(1000)
     public int[] batchCreateOrderUser(@BindBean("it") List<OrderUser> its);
+
+    @Transaction
+    @SqlUpdate("update `OrderUser` set deletedOn=UNIX_TIMESTAMP() where orderId=:orderId and deletedOn is null")
+	void deleteByOrderId(@Bind("orderId")int id);
 }

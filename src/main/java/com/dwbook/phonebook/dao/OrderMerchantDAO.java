@@ -24,8 +24,9 @@ import com.dwbook.phonebook.representations.OrderMerchant;
  * 		getAllActiveOrderMerchant						AdminResource
  * 		getAllOrderMerchant									AdminResource
  * 		getMerchantByOrderId								OrderMerchantResource
- * 		batchCreateOrderMerchant						OrderResource
- * 		deleteMerchant											OrderResource
+ * 		batchCreateOrderMerchant						OrderMerchantResource
+ * 		deleteMerchant											OrderMerchantResource
+ * 		deleteByOrderId										OrderResource
  */
 
 public interface OrderMerchantDAO extends Transactional<OrderMerchantDAO> {
@@ -44,10 +45,14 @@ public interface OrderMerchantDAO extends Transactional<OrderMerchantDAO> {
 
     @Transaction
     @SqlUpdate("update `OrderMerchant` set deletedOn=UNIX_TIMESTAMP() where merchantId = :merchantId and orderId=:orderId and deletedOn is null")
-    void deleteMerchant(@Bind("orderId") int orderId, @Bind("merchantId") String merchantId);
+    void deleteMerchant(@Bind("orderId") int orderId, @Bind("merchantId") int merchantId);
 
     @Transaction
-    @SqlBatch("insert into `OrderMerchant` (orderId, merchantId, createdOn) values (:it.orderId, :it.merchantId, UNIX_TIMESTAMP()) ")
+    @SqlBatch("insert into `OrderMerchant` (orderId, merchantId, createdOn) values (:it.orderId, :it.merchantId, UNIX_TIMESTAMP()) on duplicate key update updatedOn=UNIX_TIMESTAMP(), deletedOn=null")
     @BatchChunkSize(1000)
     public int[] batchCreateOrderMerchant(@BindBean("it") List<OrderMerchant> its);
+
+    @Transaction
+    @SqlUpdate("update `OrderMerchant` set deletedOn=UNIX_TIMESTAMP() where orderId=:orderId and deletedOn is null")
+	void deleteByOrderId(@Bind("orderId") int orderId);
 }

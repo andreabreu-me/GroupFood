@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dwbook.phonebook.dao.OrderDAO;
+import com.dwbook.phonebook.dao.OrderMerchantDAO;
 import com.dwbook.phonebook.dao.OrderUserDAO;
 import com.dwbook.phonebook.representations.Order;
 import com.dwbook.phonebook.representations.OrderUser;
@@ -33,11 +34,10 @@ import com.dwbook.phonebook.representations.OrderUser;
  */
 
 /*@GET 	
- * 			/User/{userId}/Order																													return all orders created by UserId
- * 			/User/{userId}/Order/{orderId}																									return orders created by UserId using orderId
+ * 			/User/{userId}/Order																													return all orders that User participates
+ * 			/User/{userId}/Order/{orderId}																									return the order detail by orderId
  *@POST
  *				/User/{userId}/Order																													create entries in Order and OrderUser
- *				/User/{userId}/Order/{orderId}/OrderUser																				update participants in an Order the user creates
  *@PUT
  *				/User/{userId}/Order/{orderId}																									update order's data
  *@DELETE	
@@ -93,24 +93,6 @@ public class OrderResource {
            }
     }        
     
-    @POST
-    @Path("/{orderId}/OrderUser")
-    public Response createOrderUser(@PathParam("orderId") int orderId, List<OrderUser> orderUser, @Auth Boolean isAuthenticated) throws URISyntaxException, SQLException{
- 	   Handle handle = jdbi.open();
-        handle.getConnection().setAutoCommit(false);
-        try {
-            handle.begin();
-            OrderUserDAO orderUserDao = handle.attach(OrderUserDAO.class);
-            int[] ids = orderUserDao.batchCreateOrderUser(orderUser);
-            handle.commit();
-            return Response.created(new URI(String.valueOf(ids.length))).build();
-        } 
-        catch (Exception e) {
-            handle.rollback();
-            throw e;
-        }
- }        
-    
     @PUT
     @Path("/{id}")
     public Response createOrder(Order order, @PathParam("id") int id, @PathParam("userId") String userId, @Auth Boolean isAuthenticated) throws URISyntaxException, SQLException{
@@ -137,7 +119,12 @@ public class OrderResource {
        handle.getConnection().setAutoCommit(false);
        try {
            handle.begin();
-           orderDao.deleteOrderByOrderId(id, userId);
+           OrderDAO OrderDao = handle.attach(OrderDAO.class);
+           OrderUserDAO OrderUserDao = handle.attach(OrderUserDAO.class);
+           OrderMerchantDAO OrderMerchantDao = handle.attach(OrderMerchantDAO.class);
+           OrderDao.deleteOrderByOrderId(id, userId);
+           OrderUserDao.deleteByOrderId(id);
+           OrderMerchantDao.deleteByOrderId(id);
            handle.commit();
            return Response.noContent().build();
        } 

@@ -40,7 +40,7 @@ public interface OrderDAO extends Transactional<OrderDAO> {
 
 	//only show ones that did not have a deletedOn time stamp
     @Mapper(OrderMapper.class)
-    @SqlQuery("select * from `Order` where organizerId = :organizerId and deletedOn is null")
+    @SqlQuery("select * from `Order`, `OrderUser` where `Order`.id = `OrderUser`.orderId and `OrderUser`.userId=:organizerId and `Order`.deletedOn is null and `OrderUser`.deletedOn is null")
     List<Order> getOrderByUserId(@Bind("organizerId") String organizerId);
     
     @Mapper(OrderMapper.class)

@@ -5,22 +5,33 @@ echo -e "\nTesting OrderUserResource"
 
 echo -e "\n Please Run OrderResourceTest First"
 
-echo -e "\n Return all group sansa is participating"
-curl --verbose -k  -X GET -u john_doe:secret http://localhost:8080/User/sansaId/OrderUser
+echo -e "\nsansa adds two more people into order 1"
+curl --verbose -k -H "Content-Type:Application/json; charset=UTF-8" -X POST \
+-d '[{"orderId":"1","userId":"aryaId"},{"orderId":"1","userId":"bobId"}]' \
+-u john_doe:secret http://localhost:8080/User/sansaId/Order/1/OrderUser
 
-echo -e "\n Return all group arya is participating"
-curl --verbose -k  -X GET -u john_doe:secret http://localhost:8080/User/aryaId/OrderUser
+echo -e "\nSee all participant in order 1"
+curl --verbose -k  -X GET -u john_doe:secret http://localhost:8080/User/sansaId/Order/1/OrderUser
 
-echo -e "\n Return all group bob is participating"
-curl --verbose -k  -X GET -u john_doe:secret http://localhost:8080/User/bobId/OrderUser
+echo -e "\nSansa sees all Order Arya participates"
+curl --verbose -k  -X GET -u john_doe:secret http://localhost:8080/User/sansaId/Order/1/OrderUser/aryaId
 
-echo -e "\n Return all participants in OrderUser 1"
-curl --verbose -k  -X GET -u john_doe:secret http://localhost:8080/User/bobId/OrderUser/1
+echo -e "\nBob leaves Order"
+curl --verbose -k  -X DELETE -u john_doe:secret http://localhost:8080/User/bobId/Order/1/OrderUser
 
-echo -e "\n Bob leaves UserOrder 1"
-curl --verbose -k  -X DELETE -u john_doe:secret http://localhost:8080/User/bobId/OrderUser/1
+echo -e "\nSee all participant in order 1"
+curl --verbose -k  -X GET -u john_doe:secret http://localhost:8080/User/sansaId/Order/1/OrderUser
 
-echo -e "\n Sansa tries to access UserOrder 1"
-curl --verbose -k  -X GET -u john_doe:secret http://localhost:8080/User/bobId/OrderUser/1
+echo -e "\nArya sees all Order she participate"
+curl --verbose -k  -X GET -u john_doe:secret http://localhost:8080/User/aryaId/Order/
+
+echo -e "\nSansa sees all Order she participate"
+curl --verbose -k  -X GET -u john_doe:secret http://localhost:8080/User/sansaId/Order/
+
+echo -e "\nBob sees all Order she participate"
+curl --verbose -k  -X GET -u john_doe:secret http://localhost:8080/User/bobId/Order/
+
+echo -e "\sansaId deletes order 1"
+curl --verbose -k  -X DELETE -u john_doe:secret http://localhost:8080/User/sansaId/Order/1
 
 echo -e "\n"
