@@ -18,6 +18,8 @@ import com.dwbook.phonebook.dao.FriendDAO;
 import com.dwbook.phonebook.dao.ItemDAO;
 import com.dwbook.phonebook.dao.MerchantDAO;
 import com.dwbook.phonebook.dao.OrderDAO;
+import com.dwbook.phonebook.dao.OrderDetailDAO;
+import com.dwbook.phonebook.dao.OrderMerchantDAO;
 import com.dwbook.phonebook.dao.OrderUserDAO;
 import com.dwbook.phonebook.dao.UserDAO;
 import com.dwbook.phonebook.representations.Facebook;
@@ -25,6 +27,8 @@ import com.dwbook.phonebook.representations.Friend;
 import com.dwbook.phonebook.representations.Item;
 import com.dwbook.phonebook.representations.Merchant;
 import com.dwbook.phonebook.representations.Order;
+import com.dwbook.phonebook.representations.OrderDetail;
+import com.dwbook.phonebook.representations.OrderMerchant;
 import com.dwbook.phonebook.representations.OrderUser;
 import com.dwbook.phonebook.representations.User;
 
@@ -47,6 +51,10 @@ import com.dwbook.phonebook.representations.User;
  *				Admin/Order/all				return order table
  *				Admin/OrderUser				return active orderuser
  *				Admin/OrderUser/all		return orderuser table
+ *				Admin/OrderMerchant				return active orderMerchant
+ *				Admin/OrderMerchant/all		return orderMerchant table
+ *				Admin/OrderDetail			return active OrderDetail
+ *				Admin/OrderDetail/all		return OrderDetail table
  *@Delete
  *				Admin/User/{id}				soft delete user id = {id}, soft delete Facebook and Friend associates to the user  (not in use)
  */
@@ -63,6 +71,8 @@ public class AdminResource {
     private final ItemDAO itemDao;
     private final OrderDAO orderDao;
     private final OrderUserDAO orderUserDao;
+    private final OrderMerchantDAO orderMerchantDao;
+    private final OrderDetailDAO orderDetailDao;
     private final DBI jdbi;
 
     public AdminResource(DBI jdbi) {
@@ -73,6 +83,8 @@ public class AdminResource {
         itemDao = jdbi.onDemand(ItemDAO.class);
         orderDao = jdbi.onDemand(OrderDAO.class);
         orderUserDao = jdbi.onDemand(OrderUserDAO.class);
+        orderMerchantDao = jdbi.onDemand(OrderMerchantDAO.class);
+        orderDetailDao = jdbi.onDemand(OrderDetailDAO.class);
         this.jdbi = jdbi;
     }
     
@@ -171,6 +183,34 @@ public class AdminResource {
     public Response getAllOrderUser(@Auth Boolean isAuthenticated) {
         List<OrderUser> allOrderUser =  orderUserDao.getAllOrderUser();
         return Response.ok(allOrderUser).build();
+    }
+    
+    @Path("/OrderMerchant")
+    @GET
+    public Response getAllActiveOrderMerchant(@Auth Boolean isAuthenticated) {
+        List<OrderMerchant> allOrderMerchant =  orderMerchantDao.getAllActiveOrderMerchant();
+        return Response.ok(allOrderMerchant).build();
+    }    
+    
+    @Path("/OrderMerchant/all")
+    @GET
+    public Response getAllOrderMerchant(@Auth Boolean isAuthenticated) {
+        List<OrderMerchant> allOrderMerchant =  orderMerchantDao.getAllOrderMerchant();
+        return Response.ok(allOrderMerchant).build();
+    }
+    
+    @Path("/OrderDetail")
+    @GET
+    public Response getAllActiveOrderDetail(@Auth Boolean isAuthenticated) {
+        List<OrderDetail> allOrderDetail =  orderDetailDao.getAllActiveOrderDetail();
+        return Response.ok(allOrderDetail).build();
+    }    
+    
+    @Path("/OrderDetail/all")
+    @GET
+    public Response getAllOrderDetail(@Auth Boolean isAuthenticated) {
+        List<OrderDetail> allOrderDetail =  orderDetailDao.getAllOrderDetail();
+        return Response.ok(allOrderDetail).build();
     }
     /*
     @Path("/User/{id}")

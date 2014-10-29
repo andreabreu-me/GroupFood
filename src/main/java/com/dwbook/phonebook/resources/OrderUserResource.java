@@ -21,6 +21,9 @@ import org.skife.jdbi.v2.Handle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dwbook.phonebook.dao.OrderDAO;
+import com.dwbook.phonebook.dao.OrderDetailDAO;
+import com.dwbook.phonebook.dao.OrderMerchantDAO;
 import com.dwbook.phonebook.dao.OrderUserDAO;
 import com.dwbook.phonebook.representations.OrderUser;
 
@@ -86,7 +89,10 @@ public class OrderUserResource {
        handle.getConnection().setAutoCommit(false);
        try {
            handle.begin();
-           orderUserDao.leaveOrder(orderId, userId);
+           OrderUserDAO OrderUserDao = handle.attach(OrderUserDAO.class);
+           OrderDetailDAO  OrderDetailDao = handle.attach( OrderDetailDAO.class);
+           OrderUserDao.leaveOrder(orderId, userId);
+           OrderDetailDao.deleteByUserIdAndOrderId(userId, orderId);
            handle.commit();
            return Response.noContent().build();
        } 

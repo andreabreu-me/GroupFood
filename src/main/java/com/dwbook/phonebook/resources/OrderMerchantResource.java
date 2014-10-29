@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dwbook.phonebook.dao.ItemDAO;
+import com.dwbook.phonebook.dao.OrderDetailDAO;
 import com.dwbook.phonebook.dao.OrderMerchantDAO;
 import com.dwbook.phonebook.representations.Item;
 import com.dwbook.phonebook.representations.OrderMerchant;
@@ -88,8 +89,11 @@ public class OrderMerchantResource {
  	   Handle handle = jdbi.open();
        handle.getConnection().setAutoCommit(false);
        try {
-           handle.begin();
+           handle.begin();           
+           OrderMerchantDAO orderMerchantDao = handle.attach(OrderMerchantDAO.class);
+           OrderDetailDAO  OrderDetailDao = handle.attach( OrderDetailDAO.class);
            orderMerchantDao.deleteMerchant(orderId, merchantId);
+           OrderDetailDao.deleteByMerchantIdAndOrderId(merchantId, orderId);
            handle.commit();
            return Response.noContent().build();
        } 

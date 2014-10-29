@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dwbook.phonebook.dao.OrderDAO;
+import com.dwbook.phonebook.dao.OrderDetailDAO;
 import com.dwbook.phonebook.dao.OrderMerchantDAO;
 import com.dwbook.phonebook.dao.OrderUserDAO;
 import com.dwbook.phonebook.representations.Order;
@@ -122,9 +123,11 @@ public class OrderResource {
            OrderDAO OrderDao = handle.attach(OrderDAO.class);
            OrderUserDAO OrderUserDao = handle.attach(OrderUserDAO.class);
            OrderMerchantDAO OrderMerchantDao = handle.attach(OrderMerchantDAO.class);
+           OrderDetailDAO  OrderDetailDao = handle.attach( OrderDetailDAO.class);
            OrderDao.deleteOrderByOrderId(id, userId);
            OrderUserDao.deleteByOrderId(id);
            OrderMerchantDao.deleteByOrderId(id);
+           OrderDetailDao.deleteByOrderId(id);
            handle.commit();
            return Response.noContent().build();
        } 
