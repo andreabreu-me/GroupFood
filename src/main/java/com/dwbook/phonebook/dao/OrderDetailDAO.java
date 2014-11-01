@@ -70,11 +70,11 @@ public interface OrderDetailDAO extends Transactional<OrderDetailDAO> {
 	int createOrderDetail(@BindBean("orderDetail") OrderDetail orderDetail);
 
     @Transaction
-    @SqlUpdate("update `OrderDetail` set quantity=:orderDetail.quantity, status=:orderDetail.status, updatedOn=UNIX_TIMESTAMP() where userId=:orderDetail.userId,orderId=:orderDetail.orderId,merchantId=:orderDetail.merchantId,itemId=:orderDetail.itemId, deletedOn is null")
-	void updateOrderDetail(OrderDetail orderDetail);
+    @SqlUpdate("update `OrderDetail` set quantity=:orderDetail.quantity, status=:orderDetail.status, updatedOn=UNIX_TIMESTAMP() where userId=:orderDetail.userId and orderId=:orderDetail.orderId and merchantId=:orderDetail.merchantId and itemId=:orderDetail.itemId and deletedOn is null")
+	void updateOrderDetail(@BindBean("orderDetail")OrderDetail orderDetail);
 	
     @Transaction
-    @SqlBatch("update `OrderDetail` set deletedOn=UNIX_TIMESTAMP(), where userId=:it.userId,orderId=:it.orderId,merchantId=:it.merchantId,itemId=:it.itemId, deletedOn is null")
+    @SqlBatch("update `OrderDetail` set deletedOn=UNIX_TIMESTAMP() where userId=:it.userId and orderId=:it.orderId and merchantId=:it.merchantId and itemId=:it.itemId and deletedOn is null")
     @BatchChunkSize(1000)
 	void deleteBySelectedOrderDetails(@BindBean("it") List<OrderDetail> orderDetail);
 }

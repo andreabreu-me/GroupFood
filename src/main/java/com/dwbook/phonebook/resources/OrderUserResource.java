@@ -37,7 +37,7 @@ import com.dwbook.phonebook.representations.OrderUser;
  * @POST
  *				/User/{userId}/Order/{orderId}/OrderUser																										add User to that Order
  *@DELETE	
- *				/User/{userId}/Order/{orderId}/OrderUser/																										leave that Order
+ *				/User/{userId}/Order/{orderId}/OrderUser																										leave that Order
  */
 
 @Path("/User/{userId}/Order/{orderId}/OrderUser")
