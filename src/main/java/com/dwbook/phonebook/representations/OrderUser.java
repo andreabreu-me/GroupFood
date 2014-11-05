@@ -6,15 +6,18 @@
   public class OrderUser {
       private final int  orderId;
       private final String userId;
+      private final String status;
     
       public OrderUser() {
           this.orderId= 0;
           this.userId = null;
+          this.status = null;
       }
 
-      public OrderUser(int  orderId, String userId) {
+      public OrderUser(int  orderId, String userId, String status) {
           this.orderId= orderId;
           this.userId = userId;
+          this.status = status;
       }
 
 	public int getOrderId() {
@@ -23,5 +26,9 @@
 
 	public String getUserId() {
 		return userId;
+	}
+
+	public String getStatus() {
+		return status;
 	}
   }

@@ -13,6 +13,7 @@ import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 import org.skife.jdbi.v2.sqlobject.mixins.Transactional;
 
 import com.dwbook.phonebook.dao.mappers.OrderMerchantMapper;
+import com.dwbook.phonebook.representations.Order;
 import com.dwbook.phonebook.representations.OrderMerchant;
 
 /**
@@ -55,4 +56,6 @@ public interface OrderMerchantDAO extends Transactional<OrderMerchantDAO> {
     @Transaction
     @SqlUpdate("update `OrderMerchant` set deletedOn=UNIX_TIMESTAMP() where orderId=:orderId and deletedOn is null")
 	void deleteByOrderId(@Bind("orderId") int orderId);
+
+
 }

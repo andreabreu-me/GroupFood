@@ -25,6 +25,7 @@ import com.dwbook.phonebook.representations.OrderUser;
  * 		getAllOrderUser									AdminResource
  * 		getOrderByUserId								OrderUserResource
  * 		getUserByOrderId								OrderUserResource
+ * 		updateOrderUser								OrderUserResource
  * 		leaveOrder											OrderUserResource
  * 		batchCreateOrderUser						OrderUserResource
  * 		deleteByOrderId								OrderResource
@@ -53,11 +54,16 @@ public interface OrderUserDAO extends Transactional<OrderUserDAO> {
     void leaveOrder(@Bind("orderId") int orderId, @Bind("userId") String userId);
 
     @Transaction
-    @SqlBatch("insert into `OrderUser` (orderId, userId, createdOn) values (:it.orderId, :it.userId, UNIX_TIMESTAMP()) on duplicate key update updatedOn=UNIX_TIMESTAMP(), deletedOn=null")
+    @SqlBatch("insert into `OrderUser` (orderId, userId, status, createdOn) values (:it.orderId, :it.userId, :it.status, UNIX_TIMESTAMP()) on duplicate key update status=:it.status, updatedOn=UNIX_TIMESTAMP(), deletedOn=null")
     @BatchChunkSize(1000)
     public int[] batchCreateOrderUser(@BindBean("it") List<OrderUser> its);
 
     @Transaction
+    @SqlUpdate("update `OrderUser` set status=:orderUser.status, updateOn=UNIX_TIMESTAMP() where orderId=:orderUser.orderId and userId=:orderUser.userId and deletedOn is null")
+	void updateOrderUser(@BindBean("orderUser") OrderUser orderUser);
+    
+    @Transaction
     @SqlUpdate("update `OrderUser` set deletedOn=UNIX_TIMESTAMP() where orderId=:orderId and deletedOn is null")
 	void deleteByOrderId(@Bind("orderId")int id);
+
 }

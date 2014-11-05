@@ -14,7 +14,9 @@ import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 import org.skife.jdbi.v2.sqlobject.mixins.Transactional;
 
 import com.dwbook.phonebook.dao.mappers.MerchantMapper;
+import com.dwbook.phonebook.dao.mappers.OrderMerchantMapper;
 import com.dwbook.phonebook.representations.Merchant;
+import com.dwbook.phonebook.representations.OrderMerchant;
 
 /**
  * Created by howard on 10/20/14.
@@ -50,6 +52,7 @@ public interface MerchantDAO extends Transactional<MerchantDAO> {
     @SqlQuery("select * from Merchant where name = :name and deletedOn is null")
     Merchant getMerchantByName(@Bind("name") String name);
 
+
     @Transaction
     @GetGeneratedKeys
     @SqlUpdate("insert into Merchant (id, name, branch, description, address, latitude, longitude, deliverDistanceKm, minimumOrder, minimumDelivery, mainPhone, mobilePhone, orderSubmissionJson, imageJson, feedbackJson, createdOn) "
@@ -68,5 +71,7 @@ public interface MerchantDAO extends Transactional<MerchantDAO> {
 			@Bind("deliverDistanceKm") int deliverDistanceKm, @Bind("minimumOrder") float minimumOrder, @Bind("minimumDelivery") float minimumDelivery,
 			@Bind("mainPhone") String mainPhone, @Bind("mobilePhone") String mobilePhone, @Bind("orderSubmissionJson") String orderSubmissionJson,
 			@Bind("imageJson") String imageJson, @Bind("feedbackJson") String feedbackJson);
+
+
 
 }

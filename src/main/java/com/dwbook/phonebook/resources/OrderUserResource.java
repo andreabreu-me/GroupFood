@@ -10,6 +10,7 @@ import java.util.List;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -21,9 +22,7 @@ import org.skife.jdbi.v2.Handle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.dwbook.phonebook.dao.OrderDAO;
 import com.dwbook.phonebook.dao.OrderDetailDAO;
-import com.dwbook.phonebook.dao.OrderMerchantDAO;
 import com.dwbook.phonebook.dao.OrderUserDAO;
 import com.dwbook.phonebook.representations.OrderUser;
 
@@ -36,6 +35,8 @@ import com.dwbook.phonebook.representations.OrderUser;
  * 			/User/{userId}/Order/{orderId}/OrderUser/{participantId}																				return all order that participant participates
  * @POST
  *				/User/{userId}/Order/{orderId}/OrderUser																										add User to that Order
+ *@PUT
+ *				/User/{userId}/Order/{orderId}/OrderUser/{participantId}																				update the participant's status
  *@DELETE	
  *				/User/{userId}/Order/{orderId}/OrderUser																										leave that Order
  */
@@ -83,6 +84,25 @@ public class OrderUserResource {
             throw e;
         }
  }        
+    @PUT
+    @Path("/{participantId}")
+    public Response updateOrderUser(@PathParam("participantId") String participantId, OrderUser orderUser, @Auth Boolean isAuthenticated) throws URISyntaxException, SQLException{
+ 	   Handle handle = jdbi.open();
+        handle.getConnection().setAutoCommit(false);
+        try {
+            handle.begin();
+            OrderUserDAO orderUserDao = handle.attach(OrderUserDAO.class);
+            orderUserDao.updateOrderUser(orderUser);
+            handle.commit();
+            return Response.ok(
+                    new OrderUser(orderUser.getOrderId(), orderUser.getUserId(), orderUser.getStatus())).build();
+        } 
+        catch (Exception e) {
+            handle.rollback();
+            throw e;
+        }
+  }
+    
     @DELETE
     public Response deleteOrderUser(@PathParam("orderId") int orderId, @PathParam("userId") String userId, @Auth Boolean isAuthenticated) throws URISyntaxException, SQLException {
  	   Handle handle = jdbi.open();

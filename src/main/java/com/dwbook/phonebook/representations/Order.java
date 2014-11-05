@@ -12,6 +12,7 @@ public class Order {
     private final float  deliveryLatitude;
     private final float  deliveryLongitude;
     private final String status;
+    private final int timeLimit;
   
     public Order() {
         this.id= 0;
@@ -22,9 +23,10 @@ public class Order {
         this.deliveryLatitude= 0;
         this.deliveryLongitude= 0;
         this.status = null;
+        this.timeLimit=30;
     }
 
-    public Order(int  id, String organizerId, String name, String description, String deliveryAddress,  float  deliveryLatitude,  float  deliveryLongitude,  String status) {
+    public Order(int  id, String organizerId, String name, String description, String deliveryAddress,  float  deliveryLatitude,  float  deliveryLongitude,  String status, int timeLimit) {
         this.id= id;
         this.organizerId = organizerId;
         this.name = name;
@@ -33,6 +35,7 @@ public class Order {
         this.deliveryLatitude = deliveryLatitude;
         this.deliveryLongitude = deliveryLongitude;
         this.status = status;
+        this.timeLimit=timeLimit;
     }
 
 	public Order(int id2, String userId, Order order) {
@@ -44,6 +47,7 @@ public class Order {
         this.deliveryLatitude = order.getDeliveryLatitude();
         this.deliveryLongitude = order.getDeliveryLongitude();
         this.status = order.getStatus();
+        this.timeLimit=order.timeLimit;
 	}
 
 	public String getOrganizerId() {
@@ -76,6 +80,10 @@ public class Order {
 
 	public String getDescription() {
 		return description;
+	}
+
+	public int getTimeLimit() {
+		return timeLimit;
 	}
 
 }

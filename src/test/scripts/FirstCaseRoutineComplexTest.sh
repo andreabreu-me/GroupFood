@@ -27,6 +27,7 @@ details:\n
 		22. sansa adds merchant 1 back
 		23. sansa adds bob back
 		24. bob adds 1 item 1 from merchant 1
+		25. sansa tries to add into snow's order
 		
 		orderDetail:
 		user 	merchant 	item 	quantity
@@ -42,7 +43,7 @@ echo -e "\n==================================================="
 
 echo -e "\nsansa creates an Order"
 curl --verbose -k -H "Content-Type:Application/json; charset=UTF-8" -X POST \
--d '{"name":"order1","description":"des","deliveryAddress":"deliveryAddress","deliveryLatitude":"123.45","deliveryLongitude":"234.56","status":"created"}' \
+-d '{"name":"order1","description":"des","deliveryAddress":"deliveryAddress","deliveryLatitude":"123.45","deliveryLongitude":"234.56","status":"created","timeLimit":"30"}' \
 -u john_doe:secret http://localhost:8080/User/sansaId/Order
 
 echo -e "\nsansa adds three merchant into the order"
@@ -52,7 +53,7 @@ curl --verbose -k -H "Content-Type:Application/json; charset=UTF-8" -X POST \
 
 echo -e "\nsansa adds arya and bob into the order"
 curl --verbose -k -H "Content-Type:Application/json; charset=UTF-8" -X POST \
--d '[{"orderId":"1","userId":"aryaId"},{"orderId":"1","userId":"bobId"}]' \
+-d '[{"orderId":"1","userId":"aryaId", "status":"added"},{"orderId":"1","userId":"bobId","status":"added"}]' \
 -u john_doe:secret http://localhost:8080/User/sansaId/Order/1/OrderUser
 
 echo -e "\nsansa adds 2 item 2 from merchant 1"
@@ -133,7 +134,7 @@ curl --verbose -k -H "Content-Type:Application/json; charset=UTF-8" -X POST \
 
 echo -e "\n20. sansa adds snow into the order"
 curl --verbose -k -H "Content-Type:Application/json; charset=UTF-8" -X POST \
--d '[{"orderId":"1","userId":"snowId"}]' \
+-d '[{"orderId":"1","userId":"snowId","status":"added"}]' \
 -u john_doe:secret http://localhost:8080/User/sansaId/Order/1/OrderUser
 
 echo -e "\n21. snow adds 1 item 2 from merchant 4"	
@@ -155,6 +156,11 @@ echo -e "\n24. bob adds 1 item 1 from merchant 1"
 curl --verbose -k -H "Content-Type:Application/json; charset=UTF-8" -X POST \
 -d '{"userId":"bobId","orderId":"1","merchantId":"1","itemId":"1","quantity":"1","status":"chosen"}' \
 -u john_doe:secret http://localhost:8080/User/bobId/Order/1/OrderDetail		
+
+echo -e "\n25. sansa tries to add into snow's order"
+curl --verbose -k -H "Content-Type:Application/json; charset=UTF-8" -X POST \
+-d '[{"orderId":"2","userId":"sansaId","status":"pending"}]' \
+-u john_doe:secret http://localhost:8080/User/sansaId/Order/1/OrderUser
 
 echo -e "\n"
 	

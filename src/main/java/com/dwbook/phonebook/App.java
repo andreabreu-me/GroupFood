@@ -23,6 +23,9 @@ import com.dwbook.phonebook.resources.OrderMerchantResource;
 import com.dwbook.phonebook.resources.OrderResource;
 import com.dwbook.phonebook.resources.OrderUserResource;
 import com.dwbook.phonebook.resources.UserResource;
+import com.dwbook.phonebook.resources.NewsFeedResource;
+import com.dwbook.phonebook.resources.OrderViewResource;
+
 
 public class App extends Application<PhonebookConfiguration> {
 
@@ -59,7 +62,9 @@ public class App extends Application<PhonebookConfiguration> {
         e.jersey().register(new OrderUserResource(jdbi));
         e.jersey().register(new OrderMerchantResource(jdbi));
         e.jersey().register(new OrderDetailResource(jdbi));
-
+        e.jersey().register(new NewsFeedResource(jdbi));
+        e.jersey().register(new OrderViewResource(jdbi));
+        
         e.jersey().register(new BasicAuthProvider<Boolean>(
                 new PhonebookAuthenticator(), "Web Service Realm"));
     }

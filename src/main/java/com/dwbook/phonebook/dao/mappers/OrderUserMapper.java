@@ -14,6 +14,6 @@ import java.sql.SQLException;
 public class OrderUserMapper implements ResultSetMapper<OrderUser> {
     public OrderUser map(int index, ResultSet r, StatementContext ctx) throws SQLException {
     	//We don't have to show system info to users. they are there for us administrators
-        return new OrderUser(r.getInt("orderId"), r.getString("userId"));
+        return new OrderUser(r.getInt("orderId"), r.getString("userId"), r.getString("status"));
     }
 }   

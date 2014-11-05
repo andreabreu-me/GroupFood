@@ -155,6 +155,7 @@ CREATE TABLE `Order`(
   `deliveryLatitude` FLOAT(10, 6) NOT NULL,
   `deliveryLongitude` FLOAT(10, 6) NOT NULL,
   `status` VARCHAR(64),
+  `timeLimit`	INT,
 
   /* system info epoch */
   `createdOn` INT UNSIGNED NOT NULL,
@@ -180,6 +181,7 @@ CREATE TABLE `Order`(
 CREATE TABLE `OrderUser` (
   `orderId` INT UNSIGNED NOT NULL,
   `userId` VARCHAR (128) NOT NULL,
+  `status` VARCHAR (128) NOT NULL,
 
   /* system info epoch */
   `createdOn` INT UNSIGNED NOT NULL,
@@ -345,6 +347,15 @@ insert into `User`(`id`, `facebookId`, `createdOn`) values ('bobId', 'bobFbId', 
 insert into `User`(`id`, `facebookId`, `createdOn`) values ('aryaId', 'aryaFbId', UNIX_TIMESTAMP());
 insert into `User`(`id`, `facebookId`, `createdOn`) values ('williamId', 'williamFbId', UNIX_TIMESTAMP());
 
+insert into `Friend`(`userId`, `friendId`,  `socialNetwork`, `relationship`, `createdOn`) values ('sansaId', 'snowId', 'Facebook','Friend', UNIX_TIMESTAMP());
+insert into `Friend`(`userId`, `friendId`,  `socialNetwork`, `relationship`, `createdOn`) values ('sansaId', 'bobId', 'Facebook','Friend', UNIX_TIMESTAMP());
+insert into `Friend`(`userId`, `friendId`,  `socialNetwork`, `relationship`, `createdOn`) values ('sansaId', 'aryaId', 'Facebook','Friend', UNIX_TIMESTAMP());
+insert into `Friend`(`userId`, `friendId`,  `socialNetwork`, `relationship`, `createdOn`) values ('sansaId', 'williamId', 'Facebook','Friend', UNIX_TIMESTAMP());
+insert into `Friend`(`userId`, `friendId`,  `socialNetwork`, `relationship`, `createdOn`) values ('snowId', 'sansaId', 'Facebook','Friend', UNIX_TIMESTAMP());
+insert into `Friend`(`userId`, `friendId`,  `socialNetwork`, `relationship`, `createdOn`) values ('bobId', 'sansaId', 'Facebook','Friend', UNIX_TIMESTAMP());
+insert into `Friend`(`userId`, `friendId`,  `socialNetwork`, `relationship`, `createdOn`) values ('aryaId', 'sansaId', 'Facebook','Friend', UNIX_TIMESTAMP());
+insert into `Friend`(`userId`, `friendId`,  `socialNetwork`, `relationship`, `createdOn`) values ('williamId', 'sansaId', 'Facebook','Friend', UNIX_TIMESTAMP());
+
 insert into Merchant (id, name, branch, description, address, latitude, longitude, deliverDistanceKm, minimumOrder, minimumDelivery, mainPhone, mobilePhone, orderSubmissionJson, imageJson, feedbackJson, createdOn) values (NULL, 'the first store', 'the first branch', 'des', 'first address','first la', 'first lo', '20', '20', '20', '12345677', '12345677', 'sub json', 'img json', 'fb json', UNIX_TIMESTAMP());
 insert into Merchant (id, name, branch, description, address, latitude, longitude, deliverDistanceKm, minimumOrder, minimumDelivery, mainPhone, mobilePhone, orderSubmissionJson, imageJson, feedbackJson, createdOn) values (NULL, 'the second store', 'the second branch', 'des', 'second address','second la', 'second lo', '20', '20', '20', '12345677', '12345677', 'sub json', 'img json', 'fb json', UNIX_TIMESTAMP());
 insert into Merchant (id, name, branch, description, address, latitude, longitude, deliverDistanceKm, minimumOrder, minimumDelivery, mainPhone, mobilePhone, orderSubmissionJson, imageJson, feedbackJson, createdOn) values (NULL, 'the third store', 'the third branch', 'des', 'third address','third la', 'third lo', '20', '20', '20', '12345677', '12345677', 'sub json', 'img json', 'fb json', UNIX_TIMESTAMP());
@@ -368,3 +379,5 @@ insert into Item (id, merchantId, title, description, unitPrice, dailyLimit, wei
 insert into Item (id, merchantId, title, description, unitPrice, dailyLimit, weight, imageJson, feedbackJson, createdOn) values (NULL, '3', 'the third dish', 'des', '7.99', '100', '3', 'img json', 'fb json', UNIX_TIMESTAMP());
 insert into Item (id, merchantId, title, description, unitPrice, dailyLimit, weight, imageJson, feedbackJson, createdOn) values (NULL, '4', 'the third dish', 'des', '7.99', '100', '3', 'img json', 'fb json', UNIX_TIMESTAMP());
 insert into Item (id, merchantId, title, description, unitPrice, dailyLimit, weight, imageJson, feedbackJson, createdOn) values (NULL, '5', 'the third dish', 'des', '7.99', '100', '3', 'img json', 'fb json', UNIX_TIMESTAMP());
+
+insert into `Order` (id, organizerId, name, description, deliveryAddress, deliveryLatitude, deliveryLongitude, status, timeLimit, createdOn) values ('0', 'snowId', 'snows Order', 'snow order des', 'snow addr', '123.456', '123.678', 'order status', '30', UNIX_TIMESTAMP())

@@ -155,6 +155,7 @@ CREATE TABLE `Order`(
   `deliveryLatitude` FLOAT(10, 6) NOT NULL,
   `deliveryLongitude` FLOAT(10, 6) NOT NULL,
   `status` VARCHAR(64),
+  `timeLimit`	INT,
 
   /* system info epoch */
   `createdOn` INT UNSIGNED NOT NULL,
@@ -180,6 +181,7 @@ CREATE TABLE `Order`(
 CREATE TABLE `OrderUser` (
   `orderId` INT UNSIGNED NOT NULL,
   `userId` VARCHAR (128) NOT NULL,
+  `status` VARCHAR (128) NOT NULL,
 
   /* system info epoch */
   `createdOn` INT UNSIGNED NOT NULL,

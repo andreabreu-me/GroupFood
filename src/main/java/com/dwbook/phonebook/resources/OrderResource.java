@@ -67,7 +67,7 @@ public class OrderResource {
     @GET
     @Path("/{id}")
     public Response getOrderByOrderId(@PathParam("userId") String userId,@PathParam("id") int id, @Auth Boolean isAuthenticated) {
-        Order Order = orderDao.getOrderByOrderId(userId, id);
+        Order Order = orderDao.getOrderByOrderId(id);
         return Response
                 .ok(Order)
                 .build();
@@ -83,7 +83,7 @@ public class OrderResource {
                OrderUserDAO orderUserDao = handle.attach(OrderUserDAO.class);
                int newOrderId = orderDao.createOrder(userId, order);
                List<OrderUser> orderUser = new ArrayList<OrderUser>();
-               orderUser.add(new OrderUser(newOrderId, userId));
+               orderUser.add(new OrderUser(newOrderId, userId, "added"));
                orderUserDao.batchCreateOrderUser(orderUser);
                handle.commit();
                return Response.created(new URI(String.valueOf(newOrderId))).build();
@@ -96,7 +96,7 @@ public class OrderResource {
     
     @PUT
     @Path("/{id}")
-    public Response createOrder(Order order, @PathParam("id") int id, @PathParam("userId") String userId, @Auth Boolean isAuthenticated) throws URISyntaxException, SQLException{
+    public Response updateOrder(Order order, @PathParam("id") int id, @PathParam("userId") String userId, @Auth Boolean isAuthenticated) throws URISyntaxException, SQLException{
     	   Handle handle = jdbi.open();
            handle.getConnection().setAutoCommit(false);
            try {
