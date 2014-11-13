@@ -66,6 +66,11 @@ public class NewsFeedResource {
     	for(OrderMerchant om:orderMerchant){
     		merchant.add(merchantDao.getMerchantById(om.getMerchantId()));
     	}
+        //TODO we need to use Set instead of List to remove potential duplicates
+        //Adding all merchants now as recommended merchants for 1st use case, currently unavailable in API
+        for(Merchant m : merchantDao.getAllActiveMerchant()) {
+            merchant.add(m);
+        }
     	NewsFeed nf = new NewsFeed(particapatingOrder, friendsOrder, pendingOrder, orderMerchant, merchant);
     	return Response.ok(nf).build();
     }    

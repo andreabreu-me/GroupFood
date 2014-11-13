@@ -41,7 +41,7 @@ public interface OrderDAO extends Transactional<OrderDAO> {
     List<Order> getAllOrder();
 
     @Mapper(OrderMapper.class)
-    @SqlQuery("select * from `Order`, `OrderUser` where `Order`.id = `OrderUser`.orderId and `OrderUser`.userId=:organizerId and and `OrderUser`.status!='Pending', `Order`.deletedOn is null and `OrderUser`.deletedOn is null")
+    @SqlQuery("select * from `Order`, `OrderUser` where `Order`.id = `OrderUser`.orderId and `OrderUser`.userId=:organizerId and `OrderUser`.status!='Pending' and `Order`.deletedOn is null and `OrderUser`.deletedOn is null")
     List<Order> getOrderByUserId(@Bind("organizerId") String organizerId);
     
     @Mapper(OrderMapper.class)
