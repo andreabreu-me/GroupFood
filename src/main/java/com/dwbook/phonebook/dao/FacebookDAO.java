@@ -27,6 +27,7 @@ import com.dwbook.phonebook.representations.Facebook;
  * 		getFacebookByUserId					FacebookResource
  * 		createFacebook								UserResource
  * 		updateFacebookByUserId			FacebookResource
+ * 	    updateFacebookTokenByUserId	    FacebookResource
  * 		deleteFacebookByUserId				AdminResource(FacebookResource)
  * Not in use: 
  * 		batchCreateFacebook
@@ -59,6 +60,10 @@ public interface FacebookDAO extends Transactional<FacebookDAO> {
     @Transaction
     @SqlUpdate("update Facebook set token = :token, firstName = :firstName, lastName=:lastName, email=:email, updatedOn = UNIX_TIMESTAMP() where userId= :userId and deletedOn is null")
     void updateFacebookByUserId(@Bind("userId") String userId, @Bind("token") String token, @Bind("firstName") String firstName, @Bind("lastName") String lastName, @Bind("email") String email);
+
+    @Transaction
+    @SqlUpdate("update Facebook set token = :token, updatedOn = UNIX_TIMESTAMP() where userId = :userId and deletedOn is null")
+    void updateFacebookTokenByUserId(@Bind("userId") String userId, @Bind("token") String token);
 
     @Transaction
     @SqlUpdate("update Facebook set deletedOn=:UNIX_TIMESTAMP() where userId = :userId and deletedOn is null")

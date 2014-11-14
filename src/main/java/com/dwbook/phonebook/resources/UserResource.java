@@ -57,6 +57,15 @@ public class UserResource {
                 .build();
     }
 
+    @GET
+    @Path("/FacebookId/{facebookId}")
+    public Response getUserByFacebookId(@PathParam("facebookId") String facebookId, @Auth Boolean isAuthenticated) {
+        User user = userDao.getUserByFacebookId(facebookId);
+        return Response
+                .ok(user)
+                .build();
+    }
+
     @POST
     public Response createUser(SignIn signIn, @Auth Boolean isAuthenticated) throws URISyntaxException, SQLException{
     	   Handle handle = jdbi.open();
@@ -69,7 +78,10 @@ public class UserResource {
                
                int newUserId = userDao.createUser(signIn.getUserId(), signIn.getFacebookId(), signIn.getGooglePlusId());
                facebookDao.createFacebook(signIn.getFacebookId(), signIn.getUserId(), signIn.getToken(), signIn.getFirstName(), signIn.getLastName(), signIn.getEmail());
-               friendDao.batchCreateFriend(signIn.getUserId(), signIn.getFriend());
+               //for first user his/her friend list may be null or empty, create only if they're available
+               if(signIn.getFriend() != null && signIn.getFriend().size() > 0) {
+                   friendDao.batchCreateFriend(signIn.getUserId(), signIn.getFriend());
+               }
                
                handle.commit();
                return Response.created(new URI(String.valueOf(newUserId))).build();

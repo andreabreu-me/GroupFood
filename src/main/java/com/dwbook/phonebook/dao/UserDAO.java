@@ -27,6 +27,7 @@ import com.dwbook.phonebook.representations.User;
  * 		getUserById							UserResource
  * 		createUser								UserResource
  * 		deleteUser								AdminResource
+ * 	    getUserByFacebookId                     UserResource
  * Not in use:
  * 		updateUser
  * 		batchCreateUser
@@ -46,6 +47,10 @@ public interface UserDAO extends Transactional<UserDAO> {
     @Mapper(UserMapper.class)
     @SqlQuery("select * from User where id = :id and deletedOn is null")
     User getUserById(@Bind("id") String id);
+
+    @Mapper(UserMapper.class)
+    @SqlQuery("select id, facebookId, googlePlusId from user where facebookId = :facebookId and deletedOn is null")
+    User getUserByFacebookId(@Bind("facebookId") String facebookId);
 
     @Transaction
     @GetGeneratedKeys

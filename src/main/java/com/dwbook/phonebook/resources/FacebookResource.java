@@ -104,4 +104,25 @@ public class FacebookResource {
             throw e;
         }
     }
+
+    @PUT
+    @Path("/Token")
+    public Response updateFacebookToken(@PathParam("userId") String userId, String facebookToken, @Auth Boolean isAuthenticated) throws URISyntaxException, SQLException {
+        Handle handle = jdbi.open();
+        handle.getConnection().setAutoCommit(false);
+        try {
+            //Retrofit – Body Parameter Type is wrapped by " (double quote) " by default, need to remove them
+            String leadingQuote = facebookToken.charAt(0) == '"' ? facebookToken.substring(1) : facebookToken;
+            String actualToken = leadingQuote.charAt(leadingQuote.length() - 1) == '"' ? leadingQuote.substring(0, leadingQuote.length() - 1) : leadingQuote;
+            handle.begin();
+            FacebookDAO facebookDao = handle.attach(FacebookDAO.class);
+            facebookDao.updateFacebookTokenByUserId(userId, actualToken);
+            handle.commit();
+            return Response.ok().build();
+        }
+        catch (Exception e) {
+            handle.rollback();
+            throw e;
+        }
+    }
 }
