@@ -14,6 +14,7 @@ public class SignIn {
     private final String lastName;
     private final String email;
     private final List<Friend> friend;
+    private final String imageJson;
 
     public SignIn() {
         this.userId= null;
@@ -24,9 +25,10 @@ public class SignIn {
         this.lastName = null;
         this.email = null;
         this.friend = null;
+        this.imageJson=null;
     }
 
-    public SignIn(String userId, String facebookId, String googlePlusId, String token, String firstName, String lastName, String email, List<Friend> friend) {
+    public SignIn(String userId, String facebookId, String googlePlusId, String token, String firstName, String lastName, String email, List<Friend> friend, String imageJson) {
         this.userId= userId;
         this.facebookId = facebookId;
         this.googlePlusId = googlePlusId;
@@ -35,6 +37,7 @@ public class SignIn {
         this.lastName = lastName;
         this.email = email;
         this.friend = friend;
+        this.imageJson=imageJson;
     }
     
     public String getUserId() {
@@ -65,5 +68,9 @@ public class SignIn {
 
 	public List<Friend> getFriend() {
 		return friend;
+	}
+
+	public String getImageJson() {
+		return imageJson;
 	}
 }

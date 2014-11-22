@@ -3,6 +3,7 @@ package com.dwbook.phonebook.resources;
 import io.dropwizard.auth.Auth;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.ws.rs.GET;
@@ -16,9 +17,11 @@ import org.skife.jdbi.v2.DBI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dwbook.phonebook.dao.ItemDAO;
 import com.dwbook.phonebook.dao.MerchantDAO;
 import com.dwbook.phonebook.dao.OrderDAO;
 import com.dwbook.phonebook.dao.OrderMerchantDAO;
+import com.dwbook.phonebook.representations.Item;
 import com.dwbook.phonebook.representations.Merchant;
 import com.dwbook.phonebook.representations.NewsFeed;
 import com.dwbook.phonebook.representations.Order;
@@ -40,12 +43,14 @@ public class NewsFeedResource {
     private final OrderDAO orderDao;
     private final MerchantDAO merchantDao;
     private final OrderMerchantDAO orderMerchantDao;
+    private final ItemDAO itemDao;
     private final DBI jdbi;
 
     public NewsFeedResource(DBI jdbi) {
     	orderDao = jdbi.onDemand(OrderDAO.class);
     	merchantDao = jdbi.onDemand(MerchantDAO.class);
     	orderMerchantDao = jdbi.onDemand(OrderMerchantDAO.class);
+    	itemDao = jdbi.onDemand(ItemDAO.class);
         this.jdbi = jdbi;
     }
     
@@ -54,7 +59,8 @@ public class NewsFeedResource {
     	List<Order> particapatingOrder = orderDao.getOrderByUserId(userId);
     	List<Order> friendsOrder = orderDao.getFriendOrder(userId);
     	List<Order> pendingOrder = orderDao.getPendingOrder(userId);
-    	List<Integer> orderId = new ArrayList<Integer>();
+    	List<Item> item= new ArrayList<Item>();;
+    	HashSet<Integer> orderId = new HashSet<Integer>();
     	for(Order o : particapatingOrder){    		orderId.add(o.getId());    	}
     	for(Order o : friendsOrder){    		orderId.add(o.getId());    	}
     	for(Order o : pendingOrder){    		orderId.add(o.getId());    	}
@@ -62,7 +68,7 @@ public class NewsFeedResource {
     	for(Integer i : orderId){
     		orderMerchant.addAll(orderMerchantDao.getMerchantByOrderId(i));
     	}
-    	List<Merchant> merchant = new ArrayList<Merchant>();
+    	HashSet<Merchant> merchant = new HashSet<Merchant>();
     	for(OrderMerchant om:orderMerchant){
     		merchant.add(merchantDao.getMerchantById(om.getMerchantId()));
     	}
@@ -70,8 +76,11 @@ public class NewsFeedResource {
         //Adding all merchants now as recommended merchants for 1st use case, currently unavailable in API
         for(Merchant m : merchantDao.getAllActiveMerchant()) {
             merchant.add(m);
+    		item.addAll(itemDao.getItemByMerchantId(m.getId()));
         }
-    	NewsFeed nf = new NewsFeed(particapatingOrder, friendsOrder, pendingOrder, orderMerchant, merchant);
+    	List<Merchant> m = new ArrayList<Merchant>();
+    	m.addAll(merchant);
+    	NewsFeed nf = new NewsFeed(particapatingOrder, friendsOrder, pendingOrder, orderMerchant, m, item);
     	return Response.ok(nf).build();
     }    
     

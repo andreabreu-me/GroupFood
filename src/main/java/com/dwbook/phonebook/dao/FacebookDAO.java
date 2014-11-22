@@ -52,14 +52,14 @@ public interface FacebookDAO extends Transactional<FacebookDAO> {
     
     @GetGeneratedKeys
     @Transaction
-    @SqlUpdate("insert into Facebook (id, userId, token, firstName, lastName, email, createdOn) values (:id, :userId, :token, :firstName, :lastName, :email, UNIX_TIMESTAMP())")
-    int createFacebook(@Bind("id") String id, @Bind("userId") String userId, @Bind("token") String token, @Bind("firstName") String firstName, @Bind("lastName") String lastName, @Bind("email") String email);
+    @SqlUpdate("insert into Facebook (id, userId, token, firstName, lastName, email, imageJson, createdOn) values (:id, :userId, :token, :firstName, :lastName, :email, :imageJson, UNIX_TIMESTAMP())")
+    int createFacebook(@Bind("id") String id, @Bind("userId") String userId, @Bind("token") String token, @Bind("firstName") String firstName, @Bind("lastName") String lastName, @Bind("email") String email, @Bind("imageJson") String imageJson);
 
 	//only modify ones that did not have a deletedOn time stamp
     //not allow updating id, userId, and token
     @Transaction
-    @SqlUpdate("update Facebook set token = :token, firstName = :firstName, lastName=:lastName, email=:email, updatedOn = UNIX_TIMESTAMP() where userId= :userId and deletedOn is null")
-    void updateFacebookByUserId(@Bind("userId") String userId, @Bind("token") String token, @Bind("firstName") String firstName, @Bind("lastName") String lastName, @Bind("email") String email);
+    @SqlUpdate("update Facebook set token = :token, firstName = :firstName, lastName=:lastName, email=:email, imageJson= :imageJson, updatedOn = UNIX_TIMESTAMP() where userId= :userId and deletedOn is null")
+    void updateFacebookByUserId(@Bind("userId") String userId, @Bind("token") String token, @Bind("firstName") String firstName, @Bind("lastName") String lastName, @Bind("email") String email, @Bind("imageJson") String imageJson);
 
     @Transaction
     @SqlUpdate("update Facebook set token = :token, updatedOn = UNIX_TIMESTAMP() where userId = :userId and deletedOn is null")

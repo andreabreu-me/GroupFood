@@ -23,10 +23,12 @@ import com.dwbook.phonebook.dao.OrderDetailDAO;
 import com.dwbook.phonebook.dao.OrderMerchantDAO;
 import com.dwbook.phonebook.representations.Item;
 import com.dwbook.phonebook.representations.Merchant;
+import com.dwbook.phonebook.representations.MerchantView;
 import com.dwbook.phonebook.representations.Order;
 import com.dwbook.phonebook.representations.OrderDetail;
 import com.dwbook.phonebook.representations.OrderMerchant;
 import com.dwbook.phonebook.representations.OrderView;
+import com.dwbook.phonebook.representations.UserView;
 
 /**
  * Created by howard on 11/4/14.
@@ -42,35 +44,25 @@ public class OrderViewResource {
 
     final static Logger logger = LoggerFactory.getLogger(NewsFeedResource.class);
     private final OrderDAO orderDao;
-    private final MerchantDAO merchantDao;
-    private final OrderMerchantDAO orderMerchantDao;
-    private final OrderDetailDAO orderDetailDao;
-    private final ItemDAO itemDao;
-    private final DBI jdbi;
 
     public OrderViewResource(DBI jdbi) {
     	orderDao = jdbi.onDemand(OrderDAO.class);
-    	merchantDao = jdbi.onDemand(MerchantDAO.class);
-    	orderMerchantDao = jdbi.onDemand(OrderMerchantDAO.class);
-    	orderDetailDao = jdbi.onDemand(OrderDetailDAO.class);
-    	itemDao = jdbi.onDemand(ItemDAO.class);
-        this.jdbi = jdbi;
     }
     
     @GET
     public Response getOrderViewByUserIdOrderId(@PathParam("orderId") int orderId, @PathParam("userId") String userId, @Auth Boolean isAuthenticated) {
-    	Order currentOrder = orderDao.getOrderByOrderId(orderId);
-    	List<OrderDetail> orderDetail = orderDetailDao.getOrderDetailByOrderId(orderId);
-    	List<OrderMerchant> orderMerchant = orderMerchantDao.getMerchantByOrderId(orderId);
-    	List<Merchant> merchant = new ArrayList<Merchant>();
-    	for(OrderMerchant om:orderMerchant){
-    		merchant.add(merchantDao.getMerchantById(om.getMerchantId()));
-    	}
-    	List<Item> item = new ArrayList<Item>();
-    	for(Merchant m:merchant){
-    		item.addAll(itemDao.getItemByMerchantId(m.getId()));
-    	}
-    	OrderView ov = new OrderView(currentOrder, orderDetail, orderMerchant, merchant, item);
+    	List<UserView> userView= orderDao.getUserViewByOrderId(orderId);
+        List<MerchantView> merchantView= orderDao.getMerchantViewByOrderId(orderId);
+        float userViewTotal=0;
+        float merchantViewTotal=0;
+        for(UserView uv:userView){
+        	userViewTotal+=uv.getTotal();
+        }
+        for(MerchantView mv:merchantView){
+        	merchantViewTotal+=mv.getTotal();
+        }
+    	
+    	OrderView ov = new OrderView(userView, merchantView, userViewTotal, merchantViewTotal);
     	return Response.ok(ov).build();
     }    
     

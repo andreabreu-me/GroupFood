@@ -10,6 +10,7 @@ public class Facebook {
     private final String firstName;
     private final String lastName;
     private final String email;
+    private final String imageJson;
 
     public Facebook() {
         this.userId= null;
@@ -18,15 +19,17 @@ public class Facebook {
         this.firstName = null;
         this.lastName = null;
         this.email = null;
+        this.imageJson=null;
     }
 
-    public Facebook(String userId, String id, String token, String firstName, String lastName, String email) {
+    public Facebook(String userId, String id, String token, String firstName, String lastName, String email, String imageJson) {
     	this.userId=userId;
         this.id= id;
         this.token = token;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.imageJson=imageJson;
     }
     
     public String getId() {
@@ -51,5 +54,9 @@ public class Facebook {
 
 	public String getUserId() {
 		return userId;
+	}
+
+	public String getImageJson() {
+		return imageJson;
 	}
 }

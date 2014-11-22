@@ -12,6 +12,7 @@ public class NewsFeed {
 	private final List<Order> pendingOrder;
 	private final List<OrderMerchant> orderMerchant;
 	private final List<Merchant> merchant;
+	private final List<Item> item;
 	
     public NewsFeed() {
         this.participatingOrder= null;
@@ -19,14 +20,16 @@ public class NewsFeed {
         this.merchant = null;
         this.pendingOrder = null;
         this.orderMerchant = null;
+        this.item = null;
     }
 
-    public NewsFeed(List<Order> participating, List<Order> friends, List<Order> pending, List<OrderMerchant> orderMerchant, List<Merchant> merchant) {
+    public NewsFeed(List<Order> participating, List<Order> friends, List<Order> pending, List<OrderMerchant> orderMerchant, List<Merchant> merchant, List<Item> item) {
         this.participatingOrder= participating;
         this.friendsOrder = friends;
         this.merchant = merchant;
         this.pendingOrder = pending;
         this.orderMerchant =orderMerchant;
+        this.item = item;
     }
 
 	public List<Order> getParticipatingOrder() {
@@ -47,6 +50,10 @@ public class NewsFeed {
 
 	public List<OrderMerchant> getOrderMerchant() {
 		return orderMerchant;
+	}
+
+	public List<Item> getItem() {
+		return item;
 	}
 
 }

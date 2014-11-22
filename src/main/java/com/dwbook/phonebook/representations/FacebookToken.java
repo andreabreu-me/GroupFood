@@ -11,6 +11,7 @@ public class FacebookToken {
     private final String lastName;
     private final String email;
     private final List<Friend> friend;
+    private final String imageJson;
 
     public FacebookToken() {
         this.token = null;
@@ -18,14 +19,16 @@ public class FacebookToken {
         this.lastName = null;
         this.email = null;
         this.friend = null;
+        this.imageJson=null;
     }
 
-    public FacebookToken(String token, String firstName, String lastName, String email, List<Friend> friend) {
+    public FacebookToken(String token, String firstName, String lastName, String email, List<Friend> friend, String imageJson) {
         this.token = token;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.friend = friend;
+        this.imageJson=imageJson;
     }
 
 	public String getToken() {
@@ -46,5 +49,9 @@ public class FacebookToken {
 
 	public List<Friend> getFriend() {
 		return friend;
+	}
+
+	public String getImageJson() {
+		return imageJson;
 	}
 }

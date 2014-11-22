@@ -42,11 +42,11 @@ public interface OrderUserDAO extends Transactional<OrderUserDAO> {
     List<OrderUser> getAllOrderUser();
 
     @Mapper(OrderUserMapper.class)
-    @SqlQuery("select * from `OrderUser` where userId = :userId and deletedOn is null")
+    @SqlQuery("select * from `OrderUser` where userId = :userId and status = 'added' and deletedOn is null")
     List<OrderUser> getOrderByUserId(@Bind("userId") String userId);
     
     @Mapper(OrderUserMapper.class)
-    @SqlQuery("select * from `OrderUser` where orderId = :orderId and deletedOn is null")
+    @SqlQuery("select * from `OrderUser` where orderId = :orderId and status = 'added' and deletedOn is null")
     List<OrderUser> getUserByOrderId(@Bind("orderId") int orderId);
 
     @Transaction

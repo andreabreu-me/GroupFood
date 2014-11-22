@@ -91,13 +91,13 @@ public class FacebookResource {
            FacebookDAO facebookDao = handle.attach(FacebookDAO.class);
            FriendDAO friendDao = handle.attach(FriendDAO.class);
            
-           facebookDao.updateFacebookByUserId(userId, facebookToken.getToken(), facebookToken.getFirstName(), facebookToken.getLastName(), facebookToken.getEmail());
+           facebookDao.updateFacebookByUserId(userId, facebookToken.getToken(), facebookToken.getFirstName(), facebookToken.getLastName(), facebookToken.getEmail(), facebookToken.getImageJson());
            List<Friend> friend = friendDao.getFriendByUserId(userId);
            friendDao.batchDelete(userId, friend);
            friendDao.updateFriend(userId, facebookToken.getFriend());
            handle.commit();
         	return Response.ok(
-                new Facebook(userId, user.getFacebookId(), facebookToken.getToken(), facebookToken.getFirstName(), facebookToken.getLastName(), facebookToken.getEmail())).build();
+                new Facebook(userId, user.getFacebookId(), facebookToken.getToken(), facebookToken.getFirstName(), facebookToken.getLastName(), facebookToken.getEmail(), facebookToken.getImageJson())).build();
        } 
         catch (Exception e) {
             handle.rollback();

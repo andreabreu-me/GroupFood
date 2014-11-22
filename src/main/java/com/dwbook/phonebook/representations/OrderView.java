@@ -8,39 +8,39 @@ import java.util.List;
 
 public class OrderView {
 
-	private final Order currentOrder;
-	private final List<OrderDetail> orderDetail;
-	private final List<OrderMerchant> orderMerchant;
-	private final List<Merchant> merchant;
-	private final List<Item> item;
-	
+    private final List<UserView> userView;
+    private final List<MerchantView> merchantView;
+    private final float userViewTotal;
+    private final float merchantViewTotal;
+
     public OrderView() {
-    	this.currentOrder=null;
-    	this.orderDetail=null;
-    	this.orderMerchant=null;
-    	this.merchant=null;
-    	this.item=null;
+        this.userView=null;
+        this.merchantView=null;
+        this.userViewTotal=0;
+        this.merchantViewTotal=0;
     }
-    public OrderView(Order currentOrder, List<OrderDetail> orderDetail, List<OrderMerchant> orderMerchant, List<Merchant> merchant, List<Item> item) {
-    	this.currentOrder=currentOrder;
-    	this.orderDetail=orderDetail;
-    	this.orderMerchant=orderMerchant;
-    	this.merchant=merchant;
-    	this.item=item;
+
+    public OrderView(List<UserView> userView, List<MerchantView> merchantView, float userViewTotal, float merchantViewTotal) {
+        this.userView=userView;
+        this.merchantView=merchantView;
+        this.userViewTotal=userViewTotal;
+        this.merchantViewTotal=merchantViewTotal;
     }
-	public Order getCurrentOrder() {
-		return currentOrder;
+
+	public List<MerchantView> getMerchantView() {
+		return merchantView;
 	}
-	public List<OrderDetail> getOrderDetail() {
-		return orderDetail;
+
+	public List<UserView> getUserView() {
+		return userView;
 	}
-	public List<OrderMerchant> getOrderMerchant() {
-		return orderMerchant;
+
+	public float getUserViewTotal() {
+		return userViewTotal;
 	}
-	public List<Merchant> getMerchant() {
-		return merchant;
+
+	public float getMerchantViewTotal() {
+		return merchantViewTotal;
 	}
-	public List<Item> getItem() {
-		return item;
-	}
+	
 }

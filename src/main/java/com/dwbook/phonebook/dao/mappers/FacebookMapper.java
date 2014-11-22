@@ -13,6 +13,6 @@ import java.sql.SQLException;
 public class FacebookMapper implements ResultSetMapper<Facebook> {
     public Facebook map(int index, ResultSet r, StatementContext ctx) throws SQLException {
     	//We don't have to show system info to users. they are there for us administrators
-        return new Facebook(r.getString("userId"), r.getString("id"), r.getString("token"), r.getString("firstName"), r.getString("lastName"), r.getString("email"));
+        return new Facebook(r.getString("userId"), r.getString("id"), r.getString("token"), r.getString("firstName"), r.getString("lastName"), r.getString("email"), r.getString("imageJson"));
     }
 }

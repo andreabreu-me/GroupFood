@@ -40,6 +40,7 @@ CREATE TABLE `Facebook` (
   `firstName` VARCHAR (128) NOT NULL,
   `lastName` VARCHAR (128) NOT NULL,
   `email` VARCHAR (128),
+  `imageJson`           VARCHAR (1024),
   
     /* system info epoch */
   `createdOn` INT UNSIGNED NOT NULL,
@@ -340,22 +341,6 @@ CREATE TABLE `MessageUser` (
   DEFAULT CHARSET =utf8
   CHARACTER SET utf8
   COLLATE utf8_general_ci;
-
-/* DML bootstrap test data */
-insert into `User`(`id`, `facebookId`, `createdOn`) values ('sansaId', 'sansaFbId', UNIX_TIMESTAMP());
-insert into `User`(`id`, `facebookId`, `createdOn`) values ('snowId', 'snowFbId', UNIX_TIMESTAMP());
-insert into `User`(`id`, `facebookId`, `createdOn`) values ('bobId', 'bobFbId', UNIX_TIMESTAMP());
-insert into `User`(`id`, `facebookId`, `createdOn`) values ('aryaId', 'aryaFbId', UNIX_TIMESTAMP());
-insert into `User`(`id`, `facebookId`, `createdOn`) values ('williamId', 'williamFbId', UNIX_TIMESTAMP());
-
-insert into `Friend`(`userId`, `friendId`,  `socialNetwork`, `relationship`, `createdOn`) values ('sansaId', 'snowId', 'Facebook','Friend', UNIX_TIMESTAMP());
-insert into `Friend`(`userId`, `friendId`,  `socialNetwork`, `relationship`, `createdOn`) values ('sansaId', 'bobId', 'Facebook','Friend', UNIX_TIMESTAMP());
-insert into `Friend`(`userId`, `friendId`,  `socialNetwork`, `relationship`, `createdOn`) values ('sansaId', 'aryaId', 'Facebook','Friend', UNIX_TIMESTAMP());
-insert into `Friend`(`userId`, `friendId`,  `socialNetwork`, `relationship`, `createdOn`) values ('sansaId', 'williamId', 'Facebook','Friend', UNIX_TIMESTAMP());
-insert into `Friend`(`userId`, `friendId`,  `socialNetwork`, `relationship`, `createdOn`) values ('snowId', 'sansaId', 'Facebook','Friend', UNIX_TIMESTAMP());
-insert into `Friend`(`userId`, `friendId`,  `socialNetwork`, `relationship`, `createdOn`) values ('bobId', 'sansaId', 'Facebook','Friend', UNIX_TIMESTAMP());
-insert into `Friend`(`userId`, `friendId`,  `socialNetwork`, `relationship`, `createdOn`) values ('aryaId', 'sansaId', 'Facebook','Friend', UNIX_TIMESTAMP());
-insert into `Friend`(`userId`, `friendId`,  `socialNetwork`, `relationship`, `createdOn`) values ('williamId', 'sansaId', 'Facebook','Friend', UNIX_TIMESTAMP());
 
 insert into Merchant (id, name, branch, description, address, latitude, longitude, deliverDistanceKm, minimumOrder, minimumDelivery, mainPhone, mobilePhone, orderSubmissionJson, imageJson, feedbackJson, createdOn) values (NULL, 'Merit Vegetarian', '', 'To a fresh, culinary, vegan delight every time you visit!', '548 Lawrence Expy, Sunnyvale, CA 94085','37.384839', '-121.995173', '20', '5', '50', '(408) 245-8988', '', 'phone', 'http://veggiebucks.com/wp-content/themes/directorypress/thumbs/merit-vegetarian-cuisine-sunnyvale.jpg', '4', UNIX_TIMESTAMP());
 insert into Item (id, merchantId, title, description, unitPrice, dailyLimit, weight, imageJson, feedbackJson, createdOn) values (NULL, '1', 'Curry Vermicelli Soup', 'Vermicelli, sweet potato, organic tofu, and soy protein in rich coconut curry soup.', '7.50', '20', '8', 'http://www.meritvegetarian.com/media/k2/items/cache/47e29f9fe96a1771642fb05ac8a8fd00_L.jpg', '4', UNIX_TIMESTAMP());

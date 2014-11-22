@@ -11,8 +11,12 @@ import org.skife.jdbi.v2.sqlobject.Transaction;
 import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 import org.skife.jdbi.v2.sqlobject.mixins.Transactional;
 
+import com.dwbook.phonebook.dao.mappers.MerchantViewMapper;
 import com.dwbook.phonebook.dao.mappers.OrderMapper;
+import com.dwbook.phonebook.dao.mappers.UserViewMapper;
+import com.dwbook.phonebook.representations.MerchantView;
 import com.dwbook.phonebook.representations.Order;
+import com.dwbook.phonebook.representations.UserView;
 
 /**
  * Created by howard on 10/23/14.
@@ -28,6 +32,8 @@ import com.dwbook.phonebook.representations.Order;
  * 		getPendingOrder						NewsFeedResource
  * 		createOrder								OrderResource
  * 		updateOrder								OrderResource
+ * 		getUserViewByOrderId				OrderViewResource
+ * 		getMerchantViewByOrderId		OrderViewResource
  */
 
 public interface OrderDAO extends Transactional<OrderDAO> {
@@ -49,7 +55,7 @@ public interface OrderDAO extends Transactional<OrderDAO> {
     Order getOrderByOrderId(@Bind("id") int id);
 
     @Mapper(OrderMapper.class)
-    @SqlQuery("select * from `Order` inner join `Friend` on `Order`.organizerId = `Friend`.friendId where `Friend`.userId= :organizerId and `Order`.deletedOn is null")
+    @SqlQuery("select * from `Order`, `Friend` where `Order`.organizerId = `Friend`.friendId  and `Friend`.userId= :organizerId and `Order`.deletedOn is null")
 	List<Order> getFriendOrder(@Bind("organizerId") String organizerId);
 
     @Mapper(OrderMapper.class)
@@ -69,6 +75,15 @@ public interface OrderDAO extends Transactional<OrderDAO> {
     @Transaction
     @SqlUpdate("update `Order` set deletedOn=UNIX_TIMESTAMP() where id = :id and organizerId=:organizerId and deletedOn is null")
     void deleteOrderByOrderId(@Bind("id") int id, @Bind("organizerId") String organizerId);
+
+    @Mapper(UserViewMapper.class)
+    @SqlQuery("select userId, `OrderDetail`.merchantId, itemId, quantity, unitPrice, quantity * unitPrice as 'total' from OrderDetail left join Item on `OrderDetail`.itemId = `Item`.Id where `OrderDetail`.orderId=:orderId order by userId")
+	List<UserView> getUserViewByOrderId(@Bind("orderId") int orderId);
+
+    @Mapper(MerchantViewMapper.class)
+    @SqlQuery ("select `OrderDetail`.merchantId, itemId, sum(quantity) as 'totalQuantity', unitPrice, sum(quantity * unitPrice) as 'total' from OrderDetail left join Item on `OrderDetail`.itemId = `Item`.Id where `OrderDetail`.orderId=1 group by itemId order by `OrderDetail`.merchantId")
+	List<MerchantView> getMerchantViewByOrderId(@Bind("orderId") int orderId);
+
 
 
 
