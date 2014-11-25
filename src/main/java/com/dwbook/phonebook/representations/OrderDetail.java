@@ -5,9 +5,9 @@
    */
   public class OrderDetail {
       private final String  userId;
-      private final int orderId;
-      private final int merchantId;
-      private final int itemId;
+      private final long orderId;
+      private final long merchantId;
+      private final long itemId;
       private final int quantity;
       private final String  status;
 
@@ -20,7 +20,7 @@
           this.status= null;
       }
 
-      public OrderDetail( String  userId, int orderId, int merchantId, int itemId,  int quantity, String  status) {
+      public OrderDetail( String  userId, long orderId, long merchantId, long itemId,  int quantity, String  status) {
     	  this.userId= userId;
           this.orderId= orderId;
           this.merchantId = merchantId;
@@ -29,7 +29,7 @@
           this.status= status;
       }
 
-	public int getOrderId() {
+	public long getOrderId() {
 		return orderId;
 	}
 
@@ -37,11 +37,11 @@
 		return userId;
 	}
 
-	public int getMerchantId() {
+	public long getMerchantId() {
 		return merchantId;
 	}
 
-	public int getItemId() {
+	public long getItemId() {
 		return itemId;
 	}
 

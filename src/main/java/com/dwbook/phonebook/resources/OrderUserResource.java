@@ -77,7 +77,7 @@ public class OrderUserResource {
             OrderUserDAO orderUserDao = handle.attach(OrderUserDAO.class);
             int[] ids = orderUserDao.batchCreateOrderUser(orderUser);
             handle.commit();
-            return Response.created(new URI(String.valueOf(ids.length))).build();
+            return Response.created(new URI(String.valueOf(ids.length))).entity(orderUser).build();
         } 
         catch (Exception e) {
             handle.rollback();

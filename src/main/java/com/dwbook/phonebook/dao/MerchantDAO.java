@@ -46,7 +46,7 @@ public interface MerchantDAO extends Transactional<MerchantDAO> {
 	//only show ones that did not have a deletedOn time stamp
     @Mapper(MerchantMapper.class)
     @SqlQuery("select * from Merchant where id = :id and deletedOn is null")
-    Merchant getMerchantById(@Bind("id") int id);
+    Merchant getMerchantById(@Bind("id") long id);
     
     @Mapper(MerchantMapper.class)
     @SqlQuery("select * from Merchant where name = :name and deletedOn is null")
@@ -57,7 +57,7 @@ public interface MerchantDAO extends Transactional<MerchantDAO> {
     @GetGeneratedKeys
     @SqlUpdate("insert into Merchant (id, name, branch, description, address, latitude, longitude, deliverDistanceKm, minimumOrder, minimumDelivery, mainPhone, mobilePhone, orderSubmissionJson, imageJson, feedbackJson, createdOn) "
     		+ "values (NULL, :name, :branch, :description, :address,:latitude, :longitude, :deliverDistanceKm, :minimumOrder, :minimumDelivery, :mainPhone, :mobilePhone, :orderSubmissionJson, :imageJson, :feedbackJson, UNIX_TIMESTAMP()) ")
-	int createMerchant(@Bind("id") int id, @Bind("name") String name, @Bind("branch") String branch, @Bind("description") String description,
+    long createMerchant(@Bind("id") long id, @Bind("name") String name, @Bind("branch") String branch, @Bind("description") String description,
 			@Bind("address") String address, @Bind("latitude") float latitude, @Bind("longitude") float longitude,
 			@Bind("deliverDistanceKm") int deliverDistanceKm, @Bind("minimumOrder") float minimumOrder, @Bind("minimumDelivery") float minimumDelivery,
 			@Bind("mainPhone") String mainPhone, @Bind("mobilePhone") String mobilePhone, @Bind("orderSubmissionJson") String orderSubmissionJson,

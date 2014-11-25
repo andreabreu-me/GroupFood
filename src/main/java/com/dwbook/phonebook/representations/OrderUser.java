@@ -4,7 +4,7 @@
    * Created by howard on 10/23/14.
    */
   public class OrderUser {
-      private final int  orderId;
+      private final long  orderId;
       private final String userId;
       private final String status;
     
@@ -14,13 +14,13 @@
           this.status = null;
       }
 
-      public OrderUser(int  orderId, String userId, String status) {
+      public OrderUser(long  orderId, String userId, String status) {
           this.orderId= orderId;
           this.userId = userId;
           this.status = status;
       }
 
-	public int getOrderId() {
+	public long getOrderId() {
 		return orderId;
 	}
 

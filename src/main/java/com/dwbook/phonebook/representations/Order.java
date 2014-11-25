@@ -4,7 +4,7 @@ package com.dwbook.phonebook.representations;
  * Created by howard on 10/23/14.
  */
 public class Order {
-    private final int  id;
+    private final long  id;
     private final String organizerId;
     private final String name;
     private final String description;
@@ -26,7 +26,7 @@ public class Order {
         this.timeLimit=30;
     }
 
-    public Order(int  id, String organizerId, String name, String description, String deliveryAddress,  float  deliveryLatitude,  float  deliveryLongitude,  String status, int timeLimit) {
+    public Order(long  id, String organizerId, String name, String description, String deliveryAddress,  float  deliveryLatitude,  float  deliveryLongitude,  String status, int timeLimit) {
         this.id= id;
         this.organizerId = organizerId;
         this.name = name;
@@ -38,7 +38,7 @@ public class Order {
         this.timeLimit=timeLimit;
     }
 
-	public Order(int id2, String userId, Order order) {
+	public Order(long id2, String userId, Order order) {
 		this.id= id2;
         this.organizerId = userId;
         this.name = order.getName();
@@ -54,7 +54,7 @@ public class Order {
 		return organizerId;
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 

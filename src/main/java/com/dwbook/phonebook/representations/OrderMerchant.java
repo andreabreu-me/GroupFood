@@ -4,24 +4,24 @@
    * Created by howard on 10/24/14.
    */
   public class OrderMerchant {
-      private final int  orderId;
-      private final int merchantId;
+      private final long orderId;
+      private final long merchantId;
     
       public OrderMerchant() {
           this.orderId= 0;
           this.merchantId = 0;
       }
 
-      public OrderMerchant(int  orderId, int merchantId) {
+      public OrderMerchant(long  orderId, long merchantId) {
           this.orderId= orderId;
           this.merchantId = merchantId;
       }
 
-	public int getOrderId() {
+	public long getOrderId() {
 		return orderId;
 	}
 
-	public int getMerchantId() {
+	public long getMerchantId() {
 		return merchantId;
 	}
   }

@@ -4,8 +4,8 @@ package com.dwbook.phonebook.representations;
 
 public class UserView {
 	private final String userId;
-	private final int merchantId;
-	private final int itemId;
+	private final long merchantId;
+	private final long itemId;
 	private final int quantity;
 	private final float unitPrice;
 	private final float total;
@@ -19,7 +19,7 @@ public class UserView {
         this.total=0;
     }
 
-    public UserView(String userId, int merchantId, int itemId, int quantity, float unitPrice, float total) {
+    public UserView(String userId, long merchantId, long itemId, int quantity, float unitPrice, float total) {
     	this.userId=userId;
         this.merchantId=merchantId;
         this.itemId=itemId;
@@ -28,7 +28,7 @@ public class UserView {
         this.total=total;
     }
 
-	public int getMerchantId() {
+	public long getMerchantId() {
 		return merchantId;
 	}
 
@@ -40,7 +40,7 @@ public class UserView {
 		return quantity;
 	}
 
-	public int getItemId() {
+	public long getItemId() {
 		return itemId;
 	}
 

@@ -4,8 +4,8 @@ package com.dwbook.phonebook.representations;
  * Created by howard on 10/20/14.
  */
 public class Item {
-    private final int id;
-    private final int merchantId;
+    private final long id;
+    private final long merchantId;
     private final String title;
     private final String description;
     private final float unitPrice;
@@ -26,7 +26,7 @@ public class Item {
         this.feedbackJson = null;
     }
 
-    public Item(int id, int merchantId, String title, String description, float unitPrice, int dailyLimit, int weight, String imageJson, String feedbackJson) {
+    public Item(long id, long merchantId, String title, String description, float unitPrice, int dailyLimit, int weight, String imageJson, String feedbackJson) {
         this.id= id;
         this.merchantId = merchantId;
         this.title = title;
@@ -38,11 +38,11 @@ public class Item {
         this.feedbackJson = feedbackJson;
     }
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public int getMerchantId() {
+	public long getMerchantId() {
 		return merchantId;
 	}
 

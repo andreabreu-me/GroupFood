@@ -47,16 +47,16 @@ public interface OrderUserDAO extends Transactional<OrderUserDAO> {
     
     @Mapper(OrderUserMapper.class)
     @SqlQuery("select * from `OrderUser` where orderId = :orderId and status = 'added' and deletedOn is null")
-    List<OrderUser> getUserByOrderId(@Bind("orderId") int orderId);
+    List<OrderUser> getUserByOrderId(@Bind("orderId") long orderId);
 
     @Transaction
     @SqlUpdate("update `OrderUser` set deletedOn=UNIX_TIMESTAMP() where userId = :userId and orderId=:orderId and deletedOn is null")
-    void leaveOrder(@Bind("orderId") int orderId, @Bind("userId") String userId);
+    void leaveOrder(@Bind("orderId") long orderId, @Bind("userId") String userId);
 
     @Transaction
     @SqlBatch("insert into `OrderUser` (orderId, userId, status, createdOn) values (:it.orderId, :it.userId, :it.status, UNIX_TIMESTAMP()) on duplicate key update status=:it.status, updatedOn=UNIX_TIMESTAMP(), deletedOn=null")
     @BatchChunkSize(1000)
-    public int[] batchCreateOrderUser(@BindBean("it") List<OrderUser> its);
+    int[] batchCreateOrderUser(@BindBean("it") List<OrderUser> its);
 
     @Transaction
     @SqlUpdate("update `OrderUser` set status=:orderUser.status, updateOn=UNIX_TIMESTAMP() where orderId=:orderUser.orderId and userId=:orderUser.userId and deletedOn is null")
@@ -64,6 +64,6 @@ public interface OrderUserDAO extends Transactional<OrderUserDAO> {
     
     @Transaction
     @SqlUpdate("update `OrderUser` set deletedOn=UNIX_TIMESTAMP() where orderId=:orderId and deletedOn is null")
-	void deleteByOrderId(@Bind("orderId")int id);
+	void deleteByOrderId(@Bind("orderId")long id);
 
 }

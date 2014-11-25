@@ -42,20 +42,20 @@ public interface OrderMerchantDAO extends Transactional<OrderMerchantDAO> {
     
     @Mapper(OrderMerchantMapper.class)
     @SqlQuery("select * from `OrderMerchant` where orderId = :orderId and deletedOn is null")
-    List<OrderMerchant> getMerchantByOrderId(@Bind("orderId") int orderId);
+    List<OrderMerchant> getMerchantByOrderId(@Bind("orderId") long orderId);
 
     @Transaction
     @SqlUpdate("update `OrderMerchant` set deletedOn=UNIX_TIMESTAMP() where merchantId = :merchantId and orderId=:orderId and deletedOn is null")
-    void deleteMerchant(@Bind("orderId") int orderId, @Bind("merchantId") int merchantId);
+    void deleteMerchant(@Bind("orderId") long orderId, @Bind("merchantId") long merchantId);
 
     @Transaction
     @SqlBatch("insert into `OrderMerchant` (orderId, merchantId, createdOn) values (:it.orderId, :it.merchantId, UNIX_TIMESTAMP()) on duplicate key update updatedOn=UNIX_TIMESTAMP(), deletedOn=null")
     @BatchChunkSize(1000)
-    public int[] batchCreateOrderMerchant(@BindBean("it") List<OrderMerchant> its);
+    int[] batchCreateOrderMerchant(@BindBean("it") List<OrderMerchant> its);
 
     @Transaction
     @SqlUpdate("update `OrderMerchant` set deletedOn=UNIX_TIMESTAMP() where orderId=:orderId and deletedOn is null")
-	void deleteByOrderId(@Bind("orderId") int orderId);
+	void deleteByOrderId(@Bind("orderId") long orderId);
 
 
 }

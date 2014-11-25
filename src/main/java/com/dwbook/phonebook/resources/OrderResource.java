@@ -1,5 +1,6 @@
 package com.dwbook.phonebook.resources;
 
+import com.dwbook.phonebook.representations.*;
 import io.dropwizard.auth.Auth;
 
 import java.net.URI;
@@ -27,8 +28,6 @@ import com.dwbook.phonebook.dao.OrderDAO;
 import com.dwbook.phonebook.dao.OrderDetailDAO;
 import com.dwbook.phonebook.dao.OrderMerchantDAO;
 import com.dwbook.phonebook.dao.OrderUserDAO;
-import com.dwbook.phonebook.representations.Order;
-import com.dwbook.phonebook.representations.OrderUser;
 
 /**
  * Created by howard on 10/23/14.
@@ -74,19 +73,37 @@ public class OrderResource {
     }
 
     @POST
-    public Response createOrder(@PathParam("userId") String userId, Order order, @Auth Boolean isAuthenticated) throws URISyntaxException, SQLException{
+    public Response createOrder(@PathParam("userId") String userId, OrderWrapper orderWrapper, @Auth Boolean isAuthenticated) throws URISyntaxException, SQLException{
     	   Handle handle = jdbi.open();
            handle.getConnection().setAutoCommit(false);
            try {
                handle.begin();
+
                OrderDAO orderDao = handle.attach(OrderDAO.class);
                OrderUserDAO orderUserDao = handle.attach(OrderUserDAO.class);
-               int newOrderId = orderDao.createOrder(userId, order);
+               OrderMerchantDAO orderMerchantDao = handle.attach(OrderMerchantDAO.class);
+               OrderDetailDAO orderDetailDao = handle.attach(OrderDetailDAO.class);
+               long newOrderId = orderDao.createOrder(userId, orderWrapper.getOrder());
+               Order order = new Order(newOrderId, userId,orderWrapper.getOrder());
+
                List<OrderUser> orderUser = new ArrayList<OrderUser>();
-               orderUser.add(new OrderUser(newOrderId, userId, "added"));
+               for(OrderUser ou:orderWrapper.getOrderUser()){
+                   orderUser.add(new OrderUser(newOrderId, ou.getUserId(), "added"));
+               }
                orderUserDao.batchCreateOrderUser(orderUser);
+
+               List<OrderMerchant> orderMerchant = new ArrayList<OrderMerchant>();
+               for(OrderMerchant om:orderWrapper.getOrderMerchant()){
+                   orderMerchant.add(new OrderMerchant(newOrderId, om.getMerchantId()));
+               }
+               orderMerchantDao.batchCreateOrderMerchant(orderMerchant);
+
+               OrderDetail od=orderWrapper.getOrderDetail();
+               orderDetailDao.createOrderDetail(new OrderDetail(userId,newOrderId,od.getMerchantId(),od.getItemId(),od.getQuantity(),"chosen"));
+
                handle.commit();
-               return Response.created(new URI(String.valueOf(newOrderId))).build();
+
+               return Response.created(new URI(String.valueOf(newOrderId))).entity(order).build();
            } 
            catch (Exception e) {
                handle.rollback();

@@ -77,6 +77,7 @@ public class UserResource {
                FriendDAO friendDao = handle.attach(FriendDAO.class);
                
                int newUserId = userDao.createUser(signIn.getUserId(), signIn.getFacebookId(), signIn.getGooglePlusId());
+               User user = new User(signIn.getUserId(), signIn.getFacebookId(), signIn.getGooglePlusId());
                facebookDao.createFacebook(signIn.getFacebookId(), signIn.getUserId(), signIn.getToken(), signIn.getFirstName(), signIn.getLastName(), signIn.getEmail(), signIn.getImageJson());
                //for first user his/her friend list may be null or empty, create only if they're available
                if(signIn.getFriend() != null && signIn.getFriend().size() > 0) {
@@ -84,7 +85,7 @@ public class UserResource {
                }
                
                handle.commit();
-               return Response.created(new URI(String.valueOf(newUserId))).build();
+               return Response.created(new URI(String.valueOf(newUserId))).entity(user).build();
            } 
            catch (Exception e) {
                handle.rollback();

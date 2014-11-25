@@ -36,32 +36,18 @@ echo -e "\n\nJuan should scan through the list
 			  \nan intent should be created to bind all this information along with item id, merchant id, quantity
 			  \nand move to a new activity call order activity"
 			  
-echo -e "\n\nAn task should be created to create entry in Order, OrderUser, OrderMerchant, and OrderDetail in such order
-			  \n first post the Order object to url Endpoint/Order and retrieve the orderId"
-			  
+echo -e "\n\ncreate a OrderWrapper object with a Order, a list of OrderUser, a list of OrderMerchant, and an OrderDetail
+			  \ncheck the current userid is the order's creator's id or creator's friend's id. if true, then
+			  \npost OrderUser under EndPoint/Order/{orderId}/OrderUser
+			  \ncheck the current userid is the order's creator's id. if true, then
+			  \npost OrderMerchant under EndPoint/Order/{orderId}/OrderMerchant
+			  \ncheck the current userid is in the OrderUser tabel with the orderid. if true, then
+			  \npost OrderDetail under EndPoint/Order/{orderId}/OrderDetail"
+
 curl --verbose -k -H "Content-Type:Application/json; charset=UTF-8" -X POST \
--d '{"name":"defaultName","description":"","deliveryAddress":"","deliveryLatitude":"123.45","deliveryLongitude":"234.56","status":"created"}' \
+-d '{"order":{"organizerId":"JuanCortezCognitoId","name":"defaultName","description":"","deliveryAddress":"","deliveryLatitude":"123.45","deliveryLongitude":"234.56","timeLimit":"60"},"orderUser":[{"userId":"JuanCortezCognitoId"}],"orderMerchant":[{"merchantId":"1"}],"orderDetail":{"merchantId":"1","itemId":"1","quantity":"1"}}' \
 -u john_doe:secret http://localhost:8080/User/JuanCortezCognitoId/Order
 
-echo -e "\n\nThen use that OrderId to create OrderUser, OrderMerchant, and OrderDetail
-			  \ncheck the current userid is the order's creator's id or creator's friend's id. if true, then 
-			  \npost OrderUser under EndPoint/Order/{orderId}/OrderUser
-			  \ncheck the current userid is the order's creator's id. if true, then 
-			  \npost OrderMerchant under EndPoint/Order/{orderId}/OrderMerchant
-			  \ncheck the current userid is in the OrderUser tabel with the orderid. if true, then 
-			  \npost OrderDetail under EndPoint/Order/{orderId}/OrderDetail"
-			  
-curl --verbose -k -H "Content-Type:Application/json; charset=UTF-8" -X POST \
--d '[{"orderId":"1","userId":"JuanCortezCognitoId", "status":"added"}]' \
--u john_doe:secret http://localhost:8080/User/JuanCortezCognitoId/Order/1/OrderUser
-
-curl --verbose -k -H "Content-Type:Application/json; charset=UTF-8" -X POST \
--d '[{"orderId":"1","merchantId":"1"}]' \
--u john_doe:secret http://localhost:8080/User/JuanCortezCognitoId/Order/1/OrderMerchant
-
-curl --verbose -k -H "Content-Type:Application/json; charset=UTF-8" -X POST \
--d '{"userId":"JuanCortezCognitoId","orderId":"1","merchantId":"1","itemId":"1","quantity":"1","status":"chosen"}' \
--u john_doe:secret http://localhost:8080/User/JuanCortezCognitoId/Order/1/OrderDetail
 
 echo -e "\n\nNow Juan should see the Order Activity. 
 			  \nthere should be 1 merchant 3 items, and he should know which item he ordered

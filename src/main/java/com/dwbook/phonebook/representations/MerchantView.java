@@ -1,8 +1,8 @@
 package com.dwbook.phonebook.representations;
 
 public class MerchantView {
-	private final int merchantId;
-	private final int itemId;
+	private final long merchantId;
+	private final long itemId;
 	private final int totalQuantity;
 	private final float unitPrice;
 	private final float total;
@@ -15,7 +15,7 @@ public class MerchantView {
         this.total=0;
     }
 
-    public MerchantView(int merchantId, int itemId, int totalQuantity, float unitPrice, float total) {
+    public MerchantView(long merchantId, long itemId, int totalQuantity, float unitPrice, float total) {
         this.merchantId=merchantId;
         this.itemId=itemId;
         this.totalQuantity=totalQuantity;
@@ -23,11 +23,11 @@ public class MerchantView {
         this.total=total;
     }
 
-	public int getMerchantId() {
+	public long getMerchantId() {
 		return merchantId;
 	}
 
-	public int getItemId() {
+	public long getItemId() {
 		return itemId;
 	}
 

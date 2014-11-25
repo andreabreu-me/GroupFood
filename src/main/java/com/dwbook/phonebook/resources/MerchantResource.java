@@ -73,7 +73,7 @@ public class MerchantResource {
            try {
                handle.begin();
                MerchantDAO MerchantDao = handle.attach(MerchantDAO.class);
-               int newMerchantId = MerchantDao.createMerchant(merchant.getId(), merchant.getName(),merchant.getBranch(),merchant.getDescription(),
+               long newMerchantId = MerchantDao.createMerchant(merchant.getId(), merchant.getName(),merchant.getBranch(),merchant.getDescription(),
             		   merchant.getAddress(),merchant.getLatitude(), merchant.getLongitude(), merchant.getDeliverDistanceKm(), merchant.getMinimumOrder(),
             		   merchant.getMinimumDelivery(),merchant.getMainPhone(),merchant.getMobilePhone(),merchant.getOrderSubmissionJson(),
             		   merchant.getImageJson(),merchant.getFeedbackJson());

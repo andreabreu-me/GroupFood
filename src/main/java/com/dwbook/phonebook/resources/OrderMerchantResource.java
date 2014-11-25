@@ -76,7 +76,7 @@ public class OrderMerchantResource {
             OrderMerchantDAO orderMerchantDao = handle.attach(OrderMerchantDAO.class);
             int[] ids = orderMerchantDao.batchCreateOrderMerchant(orderMerchant);
             handle.commit();
-            return Response.created(new URI(String.valueOf(ids.length))).build();
+            return Response.created(new URI(String.valueOf(ids.length))).entity(orderMerchant).build();
         } 
         catch (Exception e) {
             handle.rollback();

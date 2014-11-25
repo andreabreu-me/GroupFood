@@ -86,7 +86,7 @@ public class ItemResource {
            try {
                handle.begin();
                ItemDAO ItemDao = handle.attach(ItemDAO.class);
-               int[] newItemId = ItemDao.batchCreateItem(item);    
+               int[] newItemId = ItemDao.batchCreateItem(item);
                handle.commit();
                return Response.created(new URI(String.valueOf(newItemId.length))).build();
            } 

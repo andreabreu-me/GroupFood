@@ -60,12 +60,12 @@ public class NewsFeedResource {
     	List<Order> friendsOrder = orderDao.getFriendOrder(userId);
     	List<Order> pendingOrder = orderDao.getPendingOrder(userId);
     	List<Item> item= new ArrayList<Item>();;
-    	HashSet<Integer> orderId = new HashSet<Integer>();
+    	HashSet<Long> orderId = new HashSet<Long>();
     	for(Order o : particapatingOrder){    		orderId.add(o.getId());    	}
     	for(Order o : friendsOrder){    		orderId.add(o.getId());    	}
     	for(Order o : pendingOrder){    		orderId.add(o.getId());    	}
     	List<OrderMerchant> orderMerchant = new ArrayList<OrderMerchant>();
-    	for(Integer i : orderId){
+    	for(long i : orderId){
     		orderMerchant.addAll(orderMerchantDao.getMerchantByOrderId(i));
     	}
     	HashSet<Merchant> merchant = new HashSet<Merchant>();

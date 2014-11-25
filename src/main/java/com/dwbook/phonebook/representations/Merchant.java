@@ -4,7 +4,7 @@ package com.dwbook.phonebook.representations;
  * Created by howard on 10/20/14.
  */
 public class Merchant {
-    private final int id;
+    private final long id;
     private final String name;
     private final String branch;
     private final String description;
@@ -38,7 +38,7 @@ public class Merchant {
         this.feedbackJson = null;
     }
 
-    public Merchant(int id, String name, String branch, String description, String address,  float latitude,  float longitude,  int deliverDistanceKm,  float minimumOrder,  float minimumDelivery,  String mainPhone,  String mobilePhone,  String orderSubmissionJson,  String imageJson,  String feedbackJson) {
+    public Merchant(long id, String name, String branch, String description, String address,  float latitude,  float longitude,  int deliverDistanceKm,  float minimumOrder,  float minimumDelivery,  String mainPhone,  String mobilePhone,  String orderSubmissionJson,  String imageJson,  String feedbackJson) {
         this.id= id;
         this.name = name;
         this.branch = branch;
@@ -56,7 +56,7 @@ public class Merchant {
         this.feedbackJson = feedbackJson;
     }
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
