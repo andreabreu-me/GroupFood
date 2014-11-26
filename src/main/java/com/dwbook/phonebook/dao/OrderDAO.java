@@ -52,7 +52,7 @@ public interface OrderDAO extends Transactional<OrderDAO> {
     
     @Mapper(OrderMapper.class)
     @SqlQuery("select * from `Order` where id=:id and deletedOn is null")
-    Order getOrderByOrderId(@Bind("id") int id);
+    Order getOrderByOrderId(@Bind("id") long id);
 
     @Mapper(OrderMapper.class)
     @SqlQuery("select * from `Order`, `Friend` where `Order`.organizerId = `Friend`.friendId  and `Friend`.userId= :organizerId and `Order`.deletedOn is null")
@@ -69,20 +69,20 @@ public interface OrderDAO extends Transactional<OrderDAO> {
     
     @Transaction
     @SqlUpdate("update `Order` set  name= :order.name, description=:order.description, deliveryAddress=:order.deliveryAddress, deliveryLatitude=:order.deliveryLatitude, deliveryLongitude=:order.deliveryLongitude, status=:order.status, timeLimit=:order.timeLimit, updatedOn=UNIX_TIMESTAMP() where organizerId = :organizerId and id = :id and deletedOn is null")
-    void updateOrder(@Bind("id") int id, @Bind("organizerId") String organizerId, @BindBean("order") Order order);
+    void updateOrder(@Bind("id") long id, @Bind("organizerId") String organizerId, @BindBean("order") Order order);
     
 	//update data with a deletedOn time stamp without actually deleting it
     @Transaction
     @SqlUpdate("update `Order` set deletedOn=UNIX_TIMESTAMP() where id = :id and organizerId=:organizerId and deletedOn is null")
-    void deleteOrderByOrderId(@Bind("id") int id, @Bind("organizerId") String organizerId);
+    void deleteOrderByOrderId(@Bind("id") long id, @Bind("organizerId") String organizerId);
 
     @Mapper(UserViewMapper.class)
     @SqlQuery("select userId, `OrderDetail`.merchantId, itemId, quantity, unitPrice, quantity * unitPrice as 'total' from OrderDetail left join Item on `OrderDetail`.itemId = `Item`.Id where `OrderDetail`.orderId=:orderId order by userId")
-	List<UserView> getUserViewByOrderId(@Bind("orderId") int orderId);
+	List<UserView> getUserViewByOrderId(@Bind("orderId") long orderId);
 
     @Mapper(MerchantViewMapper.class)
     @SqlQuery ("select `OrderDetail`.merchantId, itemId, sum(quantity) as 'totalQuantity', unitPrice, sum(quantity * unitPrice) as 'total' from OrderDetail left join Item on `OrderDetail`.itemId = `Item`.Id where `OrderDetail`.orderId=1 group by itemId order by `OrderDetail`.merchantId")
-	List<MerchantView> getMerchantViewByOrderId(@Bind("orderId") int orderId);
+	List<MerchantView> getMerchantViewByOrderId(@Bind("orderId") long orderId);
 
 
 

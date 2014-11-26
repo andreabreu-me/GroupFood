@@ -66,7 +66,7 @@ public interface MerchantDAO extends Transactional<MerchantDAO> {
     @Transaction
     @SqlUpdate("update Merchant set name=:name, branch=:branch, description=:description, address=:address, latitude=:latitude, longitude=:longitude, deliverDistanceKm=:deliverDistanceKm, minimumOrder=:minimumOrder,"
     		+ " minimumDelivery=:minimumDelivery, mainPhone=:mainPhone, mobilePhone=:mobilePhone, orderSubmissionJson=:orderSubmissionJson, imageJson=:imageJson, feedbackJson=:feedbackJson, updatedOn=UNIX_TIMESTAMP() where id=:id")
-	void updateMerchant(@Bind("id") int id, @Bind("name") String name, @Bind("branch") String branch, @Bind("description") String description,
+	void updateMerchant(@Bind("id") long id, @Bind("name") String name, @Bind("branch") String branch, @Bind("description") String description,
 			@Bind("address") String address, @Bind("latitude") float latitude, @Bind("longitude") float longitude,
 			@Bind("deliverDistanceKm") int deliverDistanceKm, @Bind("minimumOrder") float minimumOrder, @Bind("minimumDelivery") float minimumDelivery,
 			@Bind("mainPhone") String mainPhone, @Bind("mobilePhone") String mobilePhone, @Bind("orderSubmissionJson") String orderSubmissionJson,

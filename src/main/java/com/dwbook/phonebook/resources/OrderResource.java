@@ -98,8 +98,12 @@ public class OrderResource {
                }
                orderMerchantDao.batchCreateOrderMerchant(orderMerchant);
 
-               OrderDetail od=orderWrapper.getOrderDetail();
-               orderDetailDao.createOrderDetail(new OrderDetail(userId,newOrderId,od.getMerchantId(),od.getItemId(),od.getQuantity(),"chosen"));
+
+               List<OrderDetail> orderDetail = new ArrayList<OrderDetail>();
+               for(OrderDetail od:orderWrapper.getOrderDetail()){
+                   orderDetail.add(new OrderDetail(userId,newOrderId,od.getMerchantId(),od.getItemId(),od.getQuantity(),"chosen"));
+               }
+               orderDetailDao.batchCreateOrderDetail(orderDetail);
 
                handle.commit();
 

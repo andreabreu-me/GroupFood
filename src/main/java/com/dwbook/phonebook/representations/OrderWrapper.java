@@ -10,7 +10,7 @@ public class OrderWrapper {
     private final Order order;
     private final List<OrderUser> orderUser;
     private final List<OrderMerchant> orderMerchant;
-    private final OrderDetail orderDetail;
+    private final List<OrderDetail> orderDetail;
 
     public OrderWrapper() {
         this.order= null;
@@ -19,7 +19,7 @@ public class OrderWrapper {
         this.orderDetail = null;
     }
 
-    public OrderWrapper(Order order, List<OrderUser> orderUser, List<OrderMerchant> orderMerchant, OrderDetail orderDetail) {
+    public OrderWrapper(Order order, List<OrderUser> orderUser, List<OrderMerchant> orderMerchant, List<OrderDetail> orderDetail) {
         this.order= order;
         this.orderUser = orderUser;
         this.orderMerchant = orderMerchant;
@@ -39,7 +39,5 @@ public class OrderWrapper {
         return orderMerchant;
     }
 
-    public OrderDetail getOrderDetail() {
-        return orderDetail;
-    }
+    public List<OrderDetail> getOrderDetail() { return orderDetail;  }
 }

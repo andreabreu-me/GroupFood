@@ -45,7 +45,7 @@ echo -e "\n\ncreate a OrderWrapper object with a Order, a list of OrderUser, a l
 			  \npost OrderDetail under EndPoint/Order/{orderId}/OrderDetail"
 
 curl --verbose -k -H "Content-Type:Application/json; charset=UTF-8" -X POST \
--d '{"order":{"organizerId":"JuanCortezCognitoId","name":"defaultName","description":"","deliveryAddress":"","deliveryLatitude":"123.45","deliveryLongitude":"234.56","timeLimit":"60"},"orderUser":[{"userId":"JuanCortezCognitoId"}],"orderMerchant":[{"merchantId":"1"}],"orderDetail":{"merchantId":"1","itemId":"1","quantity":"1"}}' \
+-d '{"order":{"organizerId":"JuanCortezCognitoId","name":"defaultName","description":"","deliveryAddress":"","deliveryLatitude":"123.45","deliveryLongitude":"234.56","timeLimit":"60"},"orderUser":[{"userId":"JuanCortezCognitoId"}],"orderMerchant":[{"merchantId":"1"}],"orderDetail":[{"merchantId":"1","itemId":"1","quantity":"1"}]}' \
 -u john_doe:secret http://localhost:8080/User/JuanCortezCognitoId/Order
 
 

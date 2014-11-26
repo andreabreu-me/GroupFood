@@ -51,11 +51,11 @@ public interface ItemDAO extends Transactional<ItemDAO> {
 	//only show ones that did not have a deletedOn time stamp
     @Mapper(ItemMapper.class)
     @SqlQuery("select * from Item where id = :id and deletedOn is null")
-    Item getItemById(@Bind("id") int id);
+    Item getItemById(@Bind("id") long id);
 
     @Mapper(ItemMapper.class)
     @SqlQuery("select * from Item where merchantId = :merchantId and deletedOn is null order by weight desc")
-	List<Item> getItemByDescendingOrder(@Bind("merchantId") int merchantId);
+	List<Item> getItemByDescendingOrder(@Bind("merchantId") long merchantId);
 	
     @Transaction
     @GetGeneratedKeys
